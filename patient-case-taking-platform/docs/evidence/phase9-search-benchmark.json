@@ -1,0 +1,58 @@
+{
+  "corpus": {
+    "cross_tenant_control_records": 1,
+    "generator": "deterministic-uuid5",
+    "indexed_records": 251,
+    "visible_records": 250
+  },
+  "correctness": {
+    "canonical_count": 250,
+    "golden_queries": 4,
+    "golden_queries_passed": 4,
+    "indexed_count": 250,
+    "tenant_reconciliation_matches": true
+  },
+  "environment": {
+    "elasticsearch": "9.3.0",
+    "platform": "Linux-6.6.87.2-microsoft-standard-WSL2-x86_64-with-glibc2.41",
+    "python": "3.11.16"
+  },
+  "generated_at": "2026-09-06T09:40:15.320577+00:00",
+  "queries": [
+    {
+      "elasticsearch_took_ms": {"max": 13, "p50": 9.0, "p95": 13.0},
+      "expected_record_id": "summary:08aa7887-342a-531a-8046-c7a7df5df76e",
+      "iterations": 5,
+      "observed_latency_ms": {"max": 23.37, "p50": 20.693, "p95": 23.37},
+      "passed": true,
+      "query": "heart attack"
+    },
+    {
+      "elasticsearch_took_ms": {"max": 15, "p50": 7.0, "p95": 15.0},
+      "expected_record_id": "summary:7700efdd-d8b3-5819-95a9-89cd8c537aff",
+      "iterations": 5,
+      "observed_latency_ms": {"max": 30.309, "p50": 16.979, "p95": 30.309},
+      "passed": true,
+      "query": "metformin"
+    },
+    {
+      "elasticsearch_took_ms": {"max": 12, "p50": 10.0, "p95": 12.0},
+      "expected_record_id": "summary:20718fa7-67e8-5cff-ba74-e31ce1f64ec3",
+      "iterations": 5,
+      "observed_latency_ms": {"max": 25.285, "p50": 21.374, "p95": 25.285},
+      "passed": true,
+      "query": "penicillin"
+    },
+    {
+      "elasticsearch_took_ms": {"max": 11, "p50": 9.0, "p95": 11.0},
+      "expected_record_id": "summary:e2d943f4-0970-554e-a056-4415f4876b67",
+      "iterations": 5,
+      "observed_latency_ms": {"max": 24.075, "p50": 17.934, "p95": 24.075},
+      "passed": true,
+      "query": "मधुमेह"
+    }
+  ],
+  "schema_version": "phase9-search-benchmark-v1",
+  "status": "PASS",
+  "total_duration_ms": 1743.071
+}
