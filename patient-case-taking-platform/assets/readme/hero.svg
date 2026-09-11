@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" width="100%" role="img" aria-label="Patient Case-Taking Platform: voice-first, multilingual, consent-driven clinical documentation">
+  <defs>
+    <linearGradient id="h-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F0F1A"/>
+      <stop offset="100%" stop-color="#1A1A2E"/>
+    </linearGradient>
+    <linearGradient id="h-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FF6B35"/>
+      <stop offset="50%" stop-color="#F7931E"/>
+      <stop offset="100%" stop-color="#FFD23F"/>
+    </linearGradient>
+    <linearGradient id="h-wave" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFD23F" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#FF6B35" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="380" fill="url(#h-bg)" rx="12"/>
+
+  <!-- motif: spoken waveform (left) flowing into structured note lines (right) -->
+  <g transform="translate(70, 96)">
+    <text font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#888" letter-spacing="3">SPOKEN</text>
+    <g fill="url(#h-wave)">
+      <rect x="0"   y="52" width="6" height="26" rx="3"/>
+      <rect x="14"  y="40" width="6" height="50" rx="3"/>
+      <rect x="28"  y="28" width="6" height="74" rx="3"/>
+      <rect x="42"  y="46" width="6" height="38" rx="3"/>
+      <rect x="56"  y="18" width="6" height="94" rx="3"/>
+      <rect x="70"  y="36" width="6" height="58" rx="3"/>
+      <rect x="84"  y="24" width="6" height="82" rx="3"/>
+      <rect x="98"  y="48" width="6" height="34" rx="3"/>
+      <rect x="112" y="32" width="6" height="66" rx="3"/>
+      <rect x="126" y="44" width="6" height="42" rx="3"/>
+    </g>
+    <text x="63" y="140" font-family="system-ui, sans-serif" font-size="11" fill="#777" text-anchor="middle">“dard pet mein…”</text>
+  </g>
+
+  <path d="M240 160 H320 M310 152 L322 160 L310 168" stroke="url(#h-accent)" stroke-width="2.5" fill="none" marker-end="none"/>
+
+  <!-- clinician gate -->
+  <g transform="translate(330, 96)">
+    <text font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#888" letter-spacing="3">CLINICIAN-VERIFIED</text>
+    <rect x="0" y="30" width="200" height="90" rx="10" fill="#16213E" stroke="#2A3A5E"/>
+    <rect x="16" y="48" width="120" height="8" rx="4" fill="#FFD23F" opacity="0.85"/>
+    <rect x="16" y="66" width="160" height="8" rx="4" fill="#4A5A7E"/>
+    <rect x="16" y="84" width="90"  height="8" rx="4" fill="#4A5A7E"/>
+    <circle cx="176" cy="52" r="10" fill="none" stroke="#147A5E" stroke-width="2"/>
+    <path d="M171 52 L175 56 L182 47" stroke="#147A5E" stroke-width="2" fill="none"/>
+    <text x="100" y="140" font-family="system-ui, sans-serif" font-size="11" fill="#777" text-anchor="middle">signed by the doctor, not the model</text>
+  </g>
+
+  <path d="M550 160 H630 M620 152 L632 160 L620 168" stroke="url(#h-accent)" stroke-width="2.5" fill="none"/>
+
+  <!-- structured provenance record -->
+  <g transform="translate(650, 96)">
+    <text font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#888" letter-spacing="3">STRUCTURED RECORD</text>
+    <g transform="translate(0, 30)">
+      <rect width="230" height="130" rx="10" fill="#0D1B2A" stroke="#2A3A5E"/>
+      <text x="18" y="30" font-family="ui-monospace, monospace" font-size="12" fill="#CCC">chief_complaint:</text>
+      <text x="18" y="50" font-family="ui-monospace, monospace" font-size="12" fill="#FFD23F">  abdominal_pain ✓</text>
+      <text x="18" y="70" font-family="ui-monospace, monospace" font-size="12" fill="#CCC">onset:</text>
+      <text x="18" y="90" font-family="ui-monospace, monospace" font-size="12" fill="#FFD23F">  2_days ✓</text>
+      <text x="18" y="112" font-family="ui-monospace, monospace" font-size="10" fill="#5D6B8A">source: utterance #14 · conf 0.97</text>
+    </g>
+  </g>
+
+  <!-- title block -->
+  <g transform="translate(650, 40)" display="none"></g>
+
+  <!-- header -->
+  <g>
+    <text x="60" y="54" font-family="system-ui, sans-serif" font-size="34" font-weight="800" fill="#FFF">Patient Case-Taking Platform</text>
+    <rect x="60" y="66" width="360" height="3" rx="1.5" fill="url(#h-accent)"/>
+    <text x="60" y="92" font-family="system-ui, sans-serif" font-size="15" fill="#B8C0D0">Voice-first, multilingual case-taking for Indian hospitals — built for Smart India Hackathon 2026</text>
+  </g>
+
+  <!-- stat chips -->
+  <g font-family="system-ui, sans-serif">
+    <g transform="translate(60, 300)">
+      <rect width="220" height="44" rx="8" fill="#16213E" stroke="#2A3A5E"/>
+      <text x="110" y="19" font-size="14" font-weight="700" fill="#FFD23F" text-anchor="middle">−60% documentation time</text>
+      <text x="110" y="35" font-size="10" fill="#8892A8" text-anchor="middle">target vs. manual case notes</text>
+    </g>
+    <g transform="translate(300, 300)">
+      <rect width="220" height="44" rx="8" fill="#16213E" stroke="#2A3A5E"/>
+      <text x="110" y="19" font-size="14" font-weight="700" fill="#F7931E" text-anchor="middle">Hindi + English, code-switched</text>
+      <text x="110" y="35" font-size="10" fill="#8892A8" text-anchor="middle">ASR + clinical NER pipeline</text>
+    </g>
+    <g transform="translate(540, 300)">
+      <rect width="220" height="44" rx="8" fill="#16213E" stroke="#2A3A5E"/>
+      <text x="110" y="19" font-size="14" font-weight="700" fill="#147A5E" text-anchor="middle">ABDM consent native</text>
+      <text x="110" y="35" font-size="10" fill="#8892A8" text-anchor="middle">ABHA linking &amp; consent flows built in</text>
+    </g>
+    <g transform="translate(780, 300)">
+      <rect width="220" height="44" rx="8" fill="#16213E" stroke="#2A3A5E"/>
+      <text x="110" y="19" font-size="14" font-weight="700" fill="#FF6B35" text-anchor="middle">Full provenance trail</text>
+      <text x="110" y="35" font-size="10" fill="#8892A8" text-anchor="middle">every assertion traceable to speech</text>
+    </g>
+    <g transform="translate(1020, 300)">
+      <rect width="120" height="44" rx="8" fill="#16213E" stroke="#2A3A5E"/>
+      <text x="60" y="19" font-size="14" font-weight="700" fill="#8AB4F8" text-anchor="middle">Phase 0</text>
+      <text x="60" y="35" font-size="10" fill="#8892A8" text-anchor="middle">planning-first</text>
+    </g>
+  </g>
+</svg>

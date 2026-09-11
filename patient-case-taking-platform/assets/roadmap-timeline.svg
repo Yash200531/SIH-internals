@@ -1,0 +1,236 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 450" width="900" height="450" role="img" aria-label="Build Roadmap - Four Phases Timeline">
+  <defs>
+    <linearGradient id="roadmap-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#080810;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F0F1A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="phase-0-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A5F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#152A4A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="phase-1-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D4F3C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A362A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="phase-2-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3D2C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2D2200;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="phase-3-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A0D3C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#360A2A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="phase-4-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A1A0D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#36120A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F7931E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFD23F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="timeline-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#2D5A8A;stop-opacity:1" />
+      <stop offset="20%" style="stop-color:#147A5E;stop-opacity:1" />
+      <stop offset="40%" style="stop-color:#5D4A00;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#8B2D6B;stop-opacity:1" />
+      <stop offset="80%" style="stop-color:#7A2A1A;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2A5D4A;stop-opacity:1" />
+    </linearGradient>
+    <filter id="phase-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="glow-marker" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="900" height="450" fill="url(#roadmap-bg)"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="system-ui, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="url(#accent-gradient)" letter-spacing="2">
+    BUILD ROADMAP
+  </text>
+  <line x1="350" y1="48" x2="550" y2="48" stroke="url(#accent-gradient)" stroke-width="3"/>
+  
+  <!-- Subtitle -->
+  <text x="450" y="68" font-family="system-ui, sans-serif" font-size="12" font-weight="400" text-anchor="middle" fill="#888" letter-spacing="0.5">
+    Phased delivery from discovery to validated advanced assistance
+  </text>
+  
+  <!-- TIMELINE LINE -->
+  <line x1="80" y1="110" x2="820" y2="110" stroke="url(#timeline-gradient)" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- PHASE MARKERS ON TIMELINE -->
+  <g font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#FFF" text-anchor="middle">
+    <circle cx="130" cy="110" r="14" fill="url(#phase-0-gradient)" stroke="#2D5A8A" stroke-width="3" filter="url(#glow-marker)"/>
+    <text x="130" y="115" font-size="12">0</text>
+    
+    <circle cx="310" cy="110" r="14" fill="url(#phase-1-gradient)" stroke="#147A5E" stroke-width="3" filter="url(#glow-marker)"/>
+    <text x="310" y="115" font-size="12">1</text>
+    
+    <circle cx="490" cy="110" r="14" fill="url(#phase-2-gradient)" stroke="#5D4A00" stroke-width="3" filter="url(#glow-marker)"/>
+    <text x="490" y="115" font-size="12">2</text>
+    
+    <circle cx="670" cy="110" r="14" fill="url(#phase-3-gradient)" stroke="#8B2D6B" stroke-width="3" filter="url(#glow-marker)"/>
+    <text x="670" y="115" font-size="12">3</text>
+    
+    <circle cx="850" cy="110" r="10" fill="url(#phase-4-gradient)" stroke="#7A2A1A" stroke-width="2" stroke-dasharray="5,5" filter="url(#glow-marker)"/>
+    <text x="850" y="115" font-size="10">4</text>
+  </g>
+  
+  <!-- PHASE DURATION LABELS -->
+  <g font-family="system-ui, sans-serif" font-size="9" font-weight="500" fill="#FFD23F" text-anchor="middle">
+    <text x="130" y="145">3–5 WEEKS</text>
+    <text x="310" y="145">8–12 WEEKS</text>
+    <text x="490" y="145">8–10 WEEKS</text>
+    <text x="670" y="145">12–16 WEEKS</text>
+    <text x="850" y="145">ONGOING</text>
+  </g>
+  
+  <!-- PHASE CARDS -->
+  <!-- PHASE 0 -->
+  <g transform="translate(40, 160)">
+    <rect width="180" height="270" rx="10" fill="url(#phase-0-gradient)" filter="url(#phase-shadow)" stroke="#2D5A8A" stroke-width="1"/>
+    
+    <!-- Phase badge -->
+    <rect x="20" y="15" width="140" height="28" rx="14" fill="#2D5A8A" opacity="0.3"/>
+    <text x="90" y="35" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#B0D0F0">PHASE 0 — DISCOVERY</text>
+    
+    <!-- Duration -->
+    <text x="90" y="55" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle" fill="#FFD23F">3–5 Weeks</text>
+    
+    <!-- Key Work -->
+    <text x="90" y="80" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#FFF">KEY WORK</text>
+    <g font-family="system-ui, sans-serif" font-size="9" fill="#CCC" text-anchor="middle">
+      <text x="90" y="100">• Clinical workflow observation</text>
+      <text x="90" y="115">• Hazard analysis &amp; threat model</text>
+      <text x="90" y="130">• Consent/retention policies</text>
+      <text x="90" y="145">• ABDM sandbox path</text>
+      <text x="90" y="160">• Synthetic eval dataset</text>
+    </g>
+    
+    <!-- Exit Gate -->
+    <line x1="15" y1="175" x2="165" y2="175" stroke="#2D5A8A" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="90" y="190" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#B0D0F0">EXIT GATE</text>
+    <g font-family="system-ui, sans-serif" font-size="8" fill="#AAA" text-anchor="middle">
+      <text x="90" y="210">✓ Signed hazard analysis</text>
+      <text x="90" y="225">✓ Approved IA &amp; threat model</text>
+      <text x="90" y="240">✓ Eval dataset ready</text>
+      <text x="90" y="255">✓ ABDM sandbox confirmed</text>
+    </g>
+  </g>
+  
+  <!-- PHASE 1 -->
+  <g transform="translate(240, 160)">
+    <rect width="180" height="270" rx="10" fill="url(#phase-1-gradient)" filter="url(#phase-shadow)" stroke="#147A5E" stroke-width="1"/>
+    
+    <rect x="20" y="15" width="140" height="28" rx="14" fill="#147A5E" opacity="0.3"/>
+    <text x="90" y="35" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#A8D5BA">PHASE 1 — MVP</text>
+    
+    <text x="90" y="55" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle" fill="#FFD23F">8–12 Weeks</text>
+    
+    <text x="90" y="80" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#FFF">BUILD ORDER</text>
+    <g font-family="system-ui, sans-serif" font-size="9" fill="#CCC" text-anchor="middle">
+      <text x="90" y="100">1. Repo tooling &amp; CI</text>
+      <text x="90" y="113">2. Workforce identity &amp; RBAC</text>
+      <text x="90" y="126">3. Patient identity &amp; reg</text>
+      <text x="90" y="139">4. Encounter state machine</text>
+      <text x="90" y="152">5. PWA, Kiosk, Clinician</text>
+      <text x="90" y="165">6. Object upload + scanning</text>
+      <text x="90" y="178">7. vLLM Gateway + Indic ASR</text>
+      <text x="90" y="191">8. Patient confirm/correct</text>
+      <text x="90" y="204">9. Draft summary + provenance</text>
+      <text x="90" y="217">10. Clinician sign-off</text>
+    </g>
+    
+    <line x1="15" y1="230" x2="165" y2="230" stroke="#147A5E" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="90" y="245" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#A8D5BA">EXIT GATE</text>
+    <g font-family="system-ui, sans-serif" font-size="8" fill="#AAA" text-anchor="middle">
+      <text x="90" y="265">✓ Supervised consult E2E</text>
+    </g>
+  </g>
+  
+  <!-- PHASE 2 -->
+  <g transform="translate(440, 160)">
+    <rect width="180" height="270" rx="10" fill="url(#phase-2-gradient)" filter="url(#phase-shadow)" stroke="#5D4A00" stroke-width="1"/>
+    
+    <rect x="20" y="15" width="140" height="28" rx="14" fill="#5D4A00" opacity="0.3"/>
+    <text x="90" y="35" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#F0E0B0">PHASE 2 — PILOT</text>
+    
+    <text x="90" y="55" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle" fill="#FFD23F">8–10 Weeks</text>
+    
+    <text x="90" y="80" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#FFF">WORK</text>
+    <g font-family="system-ui, sans-serif" font-size="9" fill="#CCC" text-anchor="middle">
+      <text x="90" y="100">• Kafka / Redpanda backbone</text>
+      <text x="90" y="113">• OCR/document worker</text>
+      <text x="90" y="126">• Red-flag alert rules</text>
+      <text x="90" y="139">• Multilingual TTS</text>
+      <text x="90" y="152">• Offline capture + sync</text>
+      <text x="90" y="165">• ABDM sandbox flows</text>
+      <text x="90" y="178">• Operational dashboards</text>
+    </g>
+    
+    <line x1="15" y1="195" x2="165" y2="195" stroke="#5D4A00" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="90" y="210" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#F0E0B0">EXIT GATE</text>
+    <g font-family="system-ui, sans-serif" font-size="8" fill="#AAA" text-anchor="middle">
+      <text x="90" y="230">✓ Measurable doc time ↓</text>
+      <text x="90" y="243">✓ ASR/NER error rates OK</text>
+      <text x="90" y="256">✓ Zero consent leaks</text>
+    </g>
+  </g>
+  
+  <!-- PHASE 3 -->
+  <g transform="translate(640, 160)">
+    <rect width="180" height="270" rx="10" fill="url(#phase-3-gradient)" filter="url(#phase-shadow)" stroke="#8B2D6B" stroke-width="1"/>
+    
+    <rect x="20" y="15" width="140" height="28" rx="14" fill="#8B2D6B" opacity="0.3"/>
+    <text x="90" y="35" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#F5C6E0">PHASE 3 — SCALE</text>
+    
+    <text x="90" y="55" font-family="system-ui, sans-serif" font-size="9" text-anchor="middle" fill="#FFD23F">12–16 Weeks</text>
+    
+    <text x="90" y="80" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#FFF">WORK</text>
+    <g font-family="system-ui, sans-serif" font-size="9" fill="#CCC" text-anchor="middle">
+      <text x="90" y="100">• Facility data isolation</text>
+      <text x="90" y="113">• ABDM production</text>
+      <text x="90" y="126">• HIS/LIMS/PACS adapters</text>
+      <text x="90" y="139">• OpenSearch clinical search</text>
+      <text x="90" y="152">• Autoscale CPU/GPU</text>
+      <text x="90" y="165">• WhatsApp opt-in</text>
+      <text x="90" y="178">• DR &amp; failover</text>
+    </g>
+    
+    <line x1="15" y1="195" x2="165" y2="195" stroke="#8B2D6B" stroke-width="1" stroke-dasharray="4,4"/>
+    <text x="90" y="210" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#F5C6E0">EXIT GATE</text>
+    <g font-family="system-ui, sans-serif" font-size="8" fill="#AAA" text-anchor="middle">
+      <text x="90" y="230">✓ Load/failover targets</text>
+      <text x="90" y="243">✓ Rebuildable indexes</text>
+      <text x="90" y="256">✓ Repeatable onboarding</text>
+    </g>
+  </g>
+  
+  <!-- PHASE 4 -->
+  <g transform="translate(840, 160)">
+    <rect width="50" height="270" rx="10" fill="url(#phase-4-gradient)" filter="url(#phase-shadow)" stroke="#7A2A1A" stroke-width="1" stroke-dasharray="5,5"/>
+    <text x="25" y="35" font-family="system-ui, sans-serif" font-size="10" font-weight="700" text-anchor="middle" fill="#F0C0B0" transform="rotate(-90, 25, 35)">PHASE 4</text>
+    <text x="25" y="80" font-family="system-ui, sans-serif" font-size="9" font-weight="500" text-anchor="middle" fill="#FFD23F" transform="rotate(-90, 25, 80)">ADVANCED</text>
+  </g>
+  
+  <!-- CROSS-PHASE WORKSTREAMS -->
+  <g transform="translate(40, 440)">
+    <text x="410" y="-15" font-family="system-ui, sans-serif" font-size="11" font-weight="700" text-anchor="middle" fill="url(#accent-gradient)">CROSS-PHASE WORKSTREAMS</text>
+    <g font-family="system-ui, sans-serif" font-size="8" fill="#888">
+      <text x="30" y="0">🏥 Clinical Safety</text>
+      <text x="180" y="0">🔒 Security/Privacy</text>
+      <text x="330" y="0">📊 Data Governance</text>
+      <text x="480" y="0">🤖 AI/ML Ops</text>
+      <text x="620" y="0">♿ UX/Accessibility</text>
+      <text x="760" y="0">⚙️ Reliability</text>
+    </g>
+  </g>
+</svg>

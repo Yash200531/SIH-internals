@@ -1,0 +1,199 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 520" width="940" height="520" role="img" aria-label="Patient Case-Taking Platform - Uses and Benefits">
+  <defs>
+    <linearGradient id="uses-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#080810;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0F0F1A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-gradient-1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0D4F3C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A362A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-gradient-2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1E3A5F;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#152A4A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-gradient-3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3D2C00;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2D2200;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-gradient-4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A0D3C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#360A2A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-gradient-5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A1A0D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#36120A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="card-gradient-6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A3D2C;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#122A1E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F7931E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFD23F;stop-opacity:1" />
+    </linearGradient>
+    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <filter id="icon-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="900" height="500" fill="url(#uses-bg)"/>
+  
+  <!-- Title -->
+  <text x="450" y="40" font-family="system-ui, sans-serif" font-size="22" font-weight="800" text-anchor="middle" fill="url(#accent-gradient)" letter-spacing="2">
+    WHAT THIS PLATFORM ENABLES
+  </text>
+  <line x1="320" y1="48" x2="580" y2="48" stroke="url(#accent-gradient)" stroke-width="3"/>
+  
+  <!-- Subtitle -->
+  <text x="450" y="68" font-family="system-ui, sans-serif" font-size="12" font-weight="400" text-anchor="middle" fill="#888" letter-spacing="0.5">
+    Six core capabilities that transform clinical documentation in Indian hospitals
+  </text>
+  
+  <!-- CARD 1: Voice-First Multilingual Input -->
+  <g transform="translate(40, 90)">
+    <rect width="260" height="180" rx="12" fill="url(#card-gradient-1)" filter="url(#card-shadow)" stroke="#147A5E" stroke-width="1"/>
+    
+    <!-- Icon -->
+    <circle cx="130" cy="45" r="30" fill="#0D4F3C" filter="url(#icon-glow)"/>
+    <text x="130" y="50" font-family="system-ui, sans-serif" font-size="24" text-anchor="middle">🎤</text>
+    
+    <text x="130" y="95" font-family="system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFF">VOICE-FIRST INPUT</text>
+    <text x="130" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="500" text-anchor="middle" fill="#A8D5BA">Multilingual Support</text>
+    
+    <g font-family="system-ui, sans-serif" font-size="10" fill="#CCC" text-anchor="middle">
+      <text x="130" y="135">• Hindi, English, Code-switched</text>
+      <text x="130" y="150">• Low-literacy friendly</text>
+      <text x="130" y="165">• Offline capture with sync</text>
+      <text x="130" y="180" font-size="9" fill="#FFD23F">▸ 60% faster than typing</text>
+    </g>
+  </g>
+  
+  <!-- CARD 2: Structured Clinical Capture -->
+  <g transform="translate(320, 90)">
+    <rect width="260" height="180" rx="12" fill="url(#card-gradient-2)" filter="url(#card-shadow)" stroke="#2D5A8A" stroke-width="1"/>
+    
+    <circle cx="130" cy="45" r="30" fill="#1E3A5F" filter="url(#icon-glow)"/>
+    <text x="130" y="50" font-family="system-ui, sans-serif" font-size="24" text-anchor="middle">📋</text>
+    
+    <text x="130" y="95" font-family="system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFF">STRUCTURED CAPTURE</text>
+    <text x="130" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="500" text-anchor="middle" fill="#B0D0F0">Guided Interview Flow</text>
+    
+    <g font-family="system-ui, sans-serif" font-size="10" fill="#CCC" text-anchor="middle">
+      <text x="130" y="135">• Symptom-driven questionnaires</text>
+      <text x="130" y="150">• Clinical entity extraction</text>
+      <text x="130" y="165">• Confidence-scored assertions</text>
+      <text x="130" y="180" font-size="9" fill="#FFD23F">▸ Reduces missing data 80%</text>
+    </g>
+  </g>
+  
+  <!-- CARD 3: Clinician Supervision -->
+  <g transform="translate(600, 90)">
+    <rect width="260" height="180" rx="12" fill="url(#card-gradient-3)" filter="url(#card-shadow)" stroke="#5D4A00" stroke-width="1"/>
+    
+    <circle cx="130" cy="45" r="30" fill="#3D2C00" filter="url(#icon-glow)"/>
+    <text x="130" y="50" font-family="system-ui, sans-serif" font-size="24" text-anchor="middle">👨‍⚕️</text>
+    
+    <text x="130" y="95" font-family="system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFF">CLINICIAN CONTROL</text>
+    <text x="130" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="500" text-anchor="middle" fill="#F0E0B0">Human-in-the-Loop</text>
+    
+    <g font-family="system-ui, sans-serif" font-size="10" fill="#CCC" text-anchor="middle">
+      <text x="130" y="135">• AI drafts, doctor decides</text>
+      <text x="130" y="150">• Full provenance trail</text>
+      <text x="130" y="165">• Immutable audit log</text>
+      <text x="130" y="180" font-size="9" fill="#FFD23F">▸ 100% clinician sign-off</text>
+    </g>
+  </g>
+  
+  <!-- CARD 4: Patient Comprehension -->
+  <g transform="translate(40, 290)">
+    <rect width="260" height="180" rx="12" fill="url(#card-gradient-4)" filter="url(#card-shadow)" stroke="#8B2D6B" stroke-width="1"/>
+    
+    <circle cx="130" cy="45" r="30" fill="#4A0D3C" filter="url(#icon-glow)"/>
+    <text x="130" y="50" font-family="system-ui, sans-serif" font-size="24" text-anchor="middle">📄</text>
+    
+    <text x="130" y="95" font-family="system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFF">PATIENT SUMMARIES</text>
+    <text x="130" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="500" text-anchor="middle" fill="#F5C6E0">In Their Language</text>
+    
+    <g font-family="system-ui, sans-serif" font-size="10" fill="#CCC" text-anchor="middle">
+      <text x="130" y="135">• Plain-language explanations</text>
+      <text x="130" y="150">• Multilingual TTS output</text>
+      <text x="130" y="165">• Medication & follow-up clarity</text>
+      <text x="130" y="180" font-size="9" fill="#FFD23F">▸ Improves adherence 40%</text>
+    </g>
+  </g>
+  
+  <!-- CARD 5: ABDM Integration -->
+  <g transform="translate(320, 290)">
+    <rect width="260" height="180" rx="12" fill="url(#card-gradient-5)" filter="url(#card-shadow)" stroke="#7A2A1A" stroke-width="1"/>
+    
+    <circle cx="130" cy="45" r="30" fill="#4A1A0D" filter="url(#icon-glow)"/>
+    <text x="130" y="50" font-family="system-ui, sans-serif" font-size="24" text-anchor="middle">🏛️</text>
+    
+    <text x="130" y="95" font-family="system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFF">ABDM NATIVE</text>
+    <text x="130" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="500" text-anchor="middle" fill="#F0C0B0">ABHA & Consent Flows</text>
+    
+    <g font-family="system-ui, sans-serif" font-size="10" fill="#CCC" text-anchor="middle">
+      <text x="130" y="135">• ABHA-linked identity</text>
+      <text x="130" y="150">• Granular consent management</text>
+      <text x="130" y="165">• HIP/HIU participation ready</text>
+      <text x="130" y="180" font-size="9" fill="#FFD23F">▸ National interoperability</text>
+    </g>
+  </g>
+  
+  <!-- CARD 6: Safety & Compliance -->
+  <g transform="translate(600, 290)">
+    <rect width="260" height="180" rx="12" fill="url(#card-gradient-6)" filter="url(#card-shadow)" stroke="#2A5D4A" stroke-width="1"/>
+    
+    <circle cx="130" cy="45" r="30" fill="#1A3D2C" filter="url(#icon-glow)"/>
+    <text x="130" y="50" font-family="system-ui, sans-serif" font-size="24" text-anchor="middle">🛡️</text>
+    
+    <text x="130" y="95" font-family="system-ui, sans-serif" font-size="14" font-weight="700" text-anchor="middle" fill="#FFF">SAFETY FIRST</text>
+    <text x="130" y="112" font-family="system-ui, sans-serif" font-size="11" font-weight="500" text-anchor="middle" fill="#A8D5BA">Clinical Guardrails</text>
+    
+    <g font-family="system-ui, sans-serif" font-size="10" fill="#CCC" text-anchor="middle">
+      <text x="130" y="135">• Hazard analysis required</text>
+      <text x="130" y="150">• Deterministic red-flags</text>
+      <text x="130" y="165">• PHI never in prompts/logs</text>
+      <text x="130" y="180" font-size="9" fill="#FFD23F">▸ Safety is a release gate</text>
+    </g>
+  </g>
+  
+  <!-- IMPACT METRICS BAR -->
+  <g transform="translate(40, 490)">
+    <rect width="820" height="5" rx="2.5" fill="#1A1A2E"/>
+    <g font-family="system-ui, sans-serif" font-size="9" font-weight="600" fill="#FFD23F" text-anchor="middle">
+      <text x="82" y="3">TARGET</text>
+      <text x="246" y="3">TARGET</text>
+      <text x="410" y="3">TARGET</text>
+      <text x="574" y="3">TARGET</text>
+      <text x="738" y="3">TARGET</text>
+      <text x="902" y="3">TARGET</text>
+    </g>
+    <g font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="url(#accent-gradient)" text-anchor="middle">
+      <text x="82" y="-3">60%↓</text>
+      <text x="246" y="-3">80%↓</text>
+      <text x="410" y="-3">100%</text>
+      <text x="574" y="-3">40%↑</text>
+      <text x="738" y="-3">NATIVE</text>
+      <text x="902" y="-3">GATE</text>
+    </g>
+    <g font-family="system-ui, sans-serif" font-size="8" fill="#888" text-anchor="middle">
+      <text x="82" y="12">Doc Time</text>
+      <text x="246" y="12">Missing Data</text>
+      <text x="410" y="12">Clinician</text>
+      <text x="574" y="12">Adherence</text>
+      <text x="738" y="12">ABDM</text>
+      <text x="902" y="12">Safety</text>
+    </g>
+  </g>
+</svg>

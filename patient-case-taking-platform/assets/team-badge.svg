@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 120" width="600" height="120" role="img" aria-label="Team: Yash, Aryan, Anushka, Sakshi, Tarun, Shivam">
+  <defs>
+    <linearGradient id="team-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1A1A2E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#16213E;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="name-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F7931E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFD23F;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="600" height="120" rx="12" fill="url(#team-bg)"/>
+  <line x1="0" y1="0" x2="600" y2="0" stroke="url(#name-gradient)" stroke-width="3" stroke-linecap="round"/>
+  
+  <text x="300" y="30" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="14" font-weight="600" text-anchor="middle" fill="#888" letter-spacing="3" text-transform="uppercase">
+    TEAM
+  </text>
+  
+  <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="22" font-weight="700" text-anchor="middle">
+    <text x="100" y="65" fill="url(#name-gradient)" filter="url(#glow)">YASH</text>
+    <text x="200" y="65" fill="url(#name-gradient)" filter="url(#glow)">ARYAN</text>
+    <text x="300" y="65" fill="url(#name-gradient)" filter="url(#glow)">ANUSHKA</text>
+    <text x="400" y="65" fill="url(#name-gradient)" filter="url(#glow)">SAKSHI</text>
+    <text x="500" y="65" fill="url(#name-gradient)" filter="url(#glow)">TARUN</text>
+    <text x="300" y="95" fill="url(#name-gradient)" filter="url(#glow)" font-size="26">SHIVAM</text>
+  </g>
+  
+  <line x1="0" y1="120" x2="600" y2="120" stroke="url(#name-gradient)" stroke-width="3" stroke-linecap="round"/>
+  
+  <g font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="9" font-weight="500" text-anchor="middle" fill="#666" letter-spacing="0.5">
+    <text x="100" y="78">BACKEND</text>
+    <text x="200" y="78">FRONTEND</text>
+    <text x="300" y="78">AI/ML</text>
+    <text x="400" y="78">DEVOPS</text>
+    <text x="500" y="78">SAFETY</text>
+    <text x="300" y="110" font-size="10" fill="#FF6B35">TEAM LEAD</text>
+  </g>
+</svg>

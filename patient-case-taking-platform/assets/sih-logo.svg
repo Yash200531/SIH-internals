@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" width="400" height="200" role="img" aria-label="Smart India Hackathon 2026 Logo">
+  <defs>
+    <linearGradient id="sih-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#F7931E;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFD23F;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="text-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFFFFF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFF3E0;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#FF6B35" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <rect width="400" height="200" rx="16" fill="#1A1A2E" filter="url(#shadow)"/>
+  
+  <circle cx="80" cy="40" r="3" fill="#FFD23F" opacity="0.6">
+    <animate attributeName="opacity" values="0.3;0.6;0.3" dur="3s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="320" cy="160" r="2" fill="#F7931E" opacity="0.5">
+    <animate attributeName="opacity" values="0.2;0.5;0.2" dur="2.5s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="350" cy="30" r="1.5" fill="#FF6B35" opacity="0.4">
+    <animate attributeName="opacity" values="0.2;0.4;0.2" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  
+  <text x="200" y="85" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="48" font-weight="800" text-anchor="middle" fill="url(#text-gradient)" letter-spacing="4">
+    SIH
+  </text>
+  
+  <text x="200" y="120" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="16" font-weight="500" text-anchor="middle" fill="#E0E0E0" letter-spacing="2">
+    SMART INDIA HACKATHON
+  </text>
+  
+  <text x="200" y="145" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="24" font-weight="700" text-anchor="middle" fill="url(#sih-gradient)" letter-spacing="3">
+    2026
+  </text>
+  
+  <line x1="120" y1="158" x2="280" y2="158" stroke="url(#sih-gradient)" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+  
+  <text x="200" y="180" font-family="system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" 
+        font-size="11" font-weight="400" text-anchor="middle" fill="#888" letter-spacing="1">
+    INNOVATE FOR INDIA
+  </text>
+</svg>
