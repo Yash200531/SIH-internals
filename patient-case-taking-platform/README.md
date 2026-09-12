@@ -8,7 +8,7 @@
 </div>
 
 <div align="center">
-  <img src="assets/readme/hero.svg" alt="Patient Case-Taking Platform — voice-first, multilingual, consent-driven clinical documentation" width="100%"/>
+  <img src="assets/Screenshot (699).png" alt="Patient Case-Taking Platform — voice-first, multilingual, consent-driven clinical documentation" width="100%"/>
 </div>
 
 # Patient Case-Taking Platform
@@ -19,9 +19,38 @@ A multilingual, consent-driven patient case-taking platform for Indian hospitals
 > clinician accountability and patient comprehension. No impact target has yet
 > been validated in a clinical deployment.
 
+## Product Walkthrough
+
+The patient can describe what is bothering them in their own words, while the
+platform organizes the information for clinical review and keeps document
+verification under staff control.
+
+<table>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/Onboarding.png" alt="Patient onboarding screen inviting the patient to describe what is bothering them" width="100%"/>
+      <br/><strong>1. Start with the patient's voice</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/Screenshot (697).png" alt="Patient speech organized into structured clinical information" width="100%"/>
+      <br/><strong>2. Organize the patient's words</strong>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img src="assets/Onbarding-Overview.png" alt="Three-step patient workflow from speaking to meeting the doctor" width="100%"/>
+      <br/><strong>3. Connect the patient to care</strong>
+    </td>
+    <td width="50%" align="center">
+      <img src="assets/Screenshot (694).png" alt="Staff OCR document verification screen with review actions" width="100%"/>
+      <br/><strong>4. Verify extracted documents</strong>
+    </td>
+  </tr>
+</table>
+
 ---
 
-## 🎯 Problem → ✨ Solution
+##  Problem →  Solution
 
 | The problem | What we build |
 |---|---|
@@ -32,7 +61,7 @@ A multilingual, consent-driven patient case-taking platform for Indian hospitals
 
 The clinician stays in charge throughout: AI drafts are suggestions, and nothing enters the signed record without clinician approval.
 
-## 🚀 Quick Start
+##  Quick Start
 
 ```bash
 git clone https://github.com/shivamsingh-007/NotMID.git
@@ -59,7 +88,7 @@ For Windows instructions, frontend-only development, backend setup and troublesh
 
 ---
 
-## 🔄 How It Works
+## How It Works
 
 Every encounter follows one loop: speak → confirm → structure → sign → explain.
 
@@ -92,12 +121,6 @@ sequenceDiagram
 
 ---
 
-## 🏗️ Architecture
-
-<div align="center">
-  <img src="assets/architecture-overview.svg" alt="System architecture: users, channels, edge, core services, data layer, and external integrations" width="800"/>
-</div>
-
 ### Design Principles
 
 1. **Patient safety is a release gate**, not a backlog item
@@ -128,7 +151,7 @@ sequenceDiagram
 
 ---
 
-## 💡 Impact Targets
+## Impact Targets
 
 <div align="center">
   <img src="assets/uses-benefits.svg" alt="Uses and benefits: target reductions in documentation time and missing data, clinician oversight, ABDM nativeness, safety gate" width="940"/>
@@ -136,25 +159,13 @@ sequenceDiagram
 
 ---
 
-## 🗺️ Roadmap
 
-<div align="center">
-  <img src="assets/roadmap-timeline.svg" alt="Four-phase build roadmap timeline" width="900"/>
-</div>
 
-| Phase | Timeline | Focus |
-|-------|----------|-------|
-| **0 — Discovery & Governance** | 3–5 weeks | Clinical workflow observation, consent/retention policies, ABDM sandbox path, synthetic evaluation set |
-| **1 — Safe Clinical Workflow MVP** | 8–12 weeks | Identity boundary, FastAPI core, encounter state machine, patient/kiosk/clinician review, mock summary workflow and clinician sign-off |
-| **2 — Hospital Pilot & Async Processing** | 8–10 weeks | Hardened Kafka workflows, OCR ensemble, clinical NLP, deterministic alerts, multilingual summaries + TTS, ABDM sandbox integration |
-| **3 — Multi-Facility Scale** | 12–16 weeks | Kafka worker-pool scale, Elasticsearch, facility isolation, ABDM production, adapters, autoscale, DR & failover |
-| **4 — Validated Advanced Assistance** | — | Specialty interviews, care-gap suggestions, retrieval-assisted summaries with citations, de-identified analytics |
 
-Full detail: [`BUILD-ROADMAP.md`](docs/plans/BUILD-ROADMAP.md).
 
----
+--
 
-## 👥 Team
+## Team
 
 | Role | Name |
 |------|------|
@@ -167,7 +178,7 @@ Full detail: [`BUILD-ROADMAP.md`](docs/plans/BUILD-ROADMAP.md).
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 | Document | Purpose |
 |----------|---------|
@@ -194,7 +205,7 @@ Full detail: [`BUILD-ROADMAP.md`](docs/plans/BUILD-ROADMAP.md).
 | [`CLINICAL-AI-SAFETY.md`](docs/safety/CLINICAL-AI-SAFETY.md) | Clinical AI safety gates |
 | [`SECURITY-AND-PRIVACY.md`](docs/security/SECURITY-AND-PRIVACY.md) | Consent, access & PHI controls |
 
-## 🔒 Safety & Compliance
+## Safety & Compliance
 
 - **Clinical Safety**: Hazard log, test cases, approval evidence, incident review
 - **Privacy**: Threat model, access reviews, key rotation, breach drills
@@ -202,7 +213,7 @@ Full detail: [`BUILD-ROADMAP.md`](docs/plans/BUILD-ROADMAP.md).
 - **AI/ML**: Model cards, evaluation reports, drift & cost monitoring
 - **Accessibility**: Field research, comprehension metrics, WCAG 2.1 AA
 
-## 🤝 Contributing
+## Contributing
 
 1. Read [`CONTEXT-GRAPH.md`](CONTEXT-GRAPH.md) and relevant subsystem `README.md`
 2. Review API/event contracts and architecture decisions
@@ -211,7 +222,7 @@ Full detail: [`BUILD-ROADMAP.md`](docs/plans/BUILD-ROADMAP.md).
 5. Include audit/observability coverage
 6. Document failure/retry behavior and rollback notes
 
-## 📄 License
+## License
 
 Apache License 2.0 — see [`LICENSE`](LICENSE) for details.
 
