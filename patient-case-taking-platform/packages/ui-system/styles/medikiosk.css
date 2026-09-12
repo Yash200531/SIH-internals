@@ -1,0 +1,157 @@
+/* MediKiosk shared design system: primitive -> semantic -> component tokens. */
+:root {
+  --mk-indigo-950: #17283b;
+  --mk-indigo-800: #24445f;
+  --mk-indigo-700: #315d78;
+  --mk-tulsi-700: #39715e;
+  --mk-tulsi-100: #dcebe2;
+  --mk-marigold-500: #e6a63c;
+  --mk-marigold-100: #faedce;
+  --mk-sindoor-700: #a94535;
+  --mk-sindoor-100: #f5dfd9;
+  --mk-paper-50: #fbf8f1;
+  --mk-paper-100: #f4efe3;
+  --mk-paper-200: #e8dfcf;
+  --mk-ink-900: #1f2a30;
+  --mk-ink-700: #4d5a5f;
+  --mk-ink-500: #6e797c;
+  --mk-white: #ffffff;
+
+  --mk-font-display: Charter, "Palatino Linotype", Palatino, Georgia, serif;
+  --mk-font-body: "Trebuchet MS", "Nirmala UI", sans-serif;
+  --mk-space-1: 0.25rem;
+  --mk-space-2: 0.5rem;
+  --mk-space-3: 0.75rem;
+  --mk-space-4: 1rem;
+  --mk-space-6: 1.5rem;
+  --mk-space-8: 2rem;
+  --mk-space-12: 3rem;
+  --mk-radius-sm: 0.75rem;
+  --mk-radius-md: 1.25rem;
+  --mk-radius-lg: 2rem;
+  --mk-shadow-soft: 0 18px 60px rgba(31, 42, 48, 0.09);
+
+  --mk-canvas: var(--mk-paper-50);
+  --mk-surface: var(--mk-white);
+  --mk-surface-muted: var(--mk-paper-100);
+  --mk-border: var(--mk-paper-200);
+  --mk-ink: var(--mk-ink-900);
+  --mk-ink-muted: var(--mk-ink-700);
+  --mk-brand: var(--mk-indigo-800);
+  --mk-brand-strong: var(--mk-indigo-950);
+  --mk-success: var(--mk-tulsi-700);
+  --mk-success-soft: var(--mk-tulsi-100);
+  --mk-warning: var(--mk-marigold-500);
+  --mk-warning-soft: var(--mk-marigold-100);
+  --mk-danger: var(--mk-sindoor-700);
+  --mk-danger-soft: var(--mk-sindoor-100);
+
+  --mk-button-bg: var(--mk-brand);
+  --mk-button-fg: var(--mk-white);
+  --mk-card-bg: var(--mk-surface);
+  --mk-card-border: var(--mk-border);
+  --mk-focus: var(--mk-marigold-500);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--mk-canvas);
+  color: var(--mk-ink);
+  font-family: var(--mk-font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, textarea, select { font: inherit; }
+button, a { -webkit-tap-highlight-color: transparent; }
+
+:focus-visible {
+  outline: 3px solid var(--mk-focus);
+  outline-offset: 3px;
+}
+
+.mk-wordmark {
+  color: var(--mk-brand-strong);
+  font-family: var(--mk-font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.035em;
+}
+
+.mk-wordmark em { color: var(--mk-success); font-style: normal; }
+
+.mk-eyebrow {
+  color: var(--mk-success);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.mk-display {
+  color: var(--mk-brand-strong);
+  font-family: var(--mk-font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
+}
+
+.mk-card {
+  background: var(--mk-card-bg);
+  border: 1px solid var(--mk-card-border);
+  border-radius: var(--mk-radius-md);
+  box-shadow: var(--mk-shadow-soft);
+}
+
+.mk-button {
+  align-items: center;
+  background: var(--mk-button-bg);
+  border: 1px solid var(--mk-button-bg);
+  border-radius: 999px;
+  color: var(--mk-button-fg);
+  cursor: pointer;
+  display: inline-flex;
+  font-weight: 800;
+  gap: var(--mk-space-2);
+  justify-content: center;
+  min-height: 48px;
+  padding: 0.75rem 1.25rem;
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.mk-button:hover { box-shadow: 0 9px 22px rgba(36, 68, 95, 0.2); transform: translateY(-1px); }
+.mk-button:active { transform: translateY(1px); }
+.mk-button--soft { background: var(--mk-surface); border-color: var(--mk-border); color: var(--mk-brand-strong); }
+.mk-button--success { background: var(--mk-success); border-color: var(--mk-success); }
+.mk-button--danger { background: var(--mk-danger); border-color: var(--mk-danger); }
+
+.mk-pill {
+  align-items: center;
+  background: var(--mk-surface-muted);
+  border-radius: 999px;
+  color: var(--mk-ink-muted);
+  display: inline-flex;
+  font-size: 0.76rem;
+  font-weight: 800;
+  gap: 0.4rem;
+  padding: 0.38rem 0.7rem;
+}
+
+.mk-pill--success { background: var(--mk-success-soft); color: var(--mk-success); }
+.mk-pill--warning { background: var(--mk-warning-soft); color: #754d0d; }
+.mk-pill--danger { background: var(--mk-danger-soft); color: var(--mk-danger); }
+
+@keyframes mk-rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.mk-enter { animation: mk-rise 480ms cubic-bezier(.2,.8,.2,1) both; }
+.mk-enter:nth-child(2) { animation-delay: 70ms; }
+.mk-enter:nth-child(3) { animation-delay: 140ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+}

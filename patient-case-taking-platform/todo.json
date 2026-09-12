@@ -1,0 +1,94 @@
+{
+  "project": "MediKiosk Patient Case-Taking Platform",
+  "reviewed_at": "2026-09-06T00:00:00+05:30",
+  "current_stage": "phase9_reviewed_search_engineering_candidate",
+  "provider_policy": "mock_dialogue_summary_tts_real_ppocrv5_no_hosted_api",
+  "status_model": {
+    "verified": "Implemented and exercised by an automated repository check",
+    "engineering_candidate": "Implemented locally; external owner/release evidence pending",
+    "pending": "Not implemented or not approved"
+  },
+  "workstreams": [
+    {
+      "name": "Patient dashboard and self-services",
+      "status": "engineering_candidate",
+      "evidence": [
+        "Token-derived /patient-portal/me boundary for signed reports and reviewed timeline",
+        "Durable patient treatment consent and confirmed intake submission",
+        "Patient document upload reuses quarantine, scanning, real PP-OCRv5-mobile, extraction and review pipeline",
+        "Dedicated OCR image recognized METFORMIN 500 from a generated prescription with the official PP-OCRv5 mobile models",
+        "Adaptive SOCRATES flow persists accepted or rejected editable draft decisions",
+        "Deterministic local mock TTS WAV route and accessible assistant/emergency states",
+        "Focused API tests plus live isolated PostgreSQL self-scope integration"
+      ],
+      "remaining_release_gates": [
+        "Production patient identity, linking, recovery and revocation",
+        "Representative OCR and production bilingual speech evaluation",
+        "Formal patient accessibility and comprehension sessions",
+        "Clinical safety, privacy/security and facility owner approval",
+        "Load, security, backup/restore and staged rollback evidence"
+      ]
+    },
+    {
+      "name": "Phase 8 summary workflow",
+      "status": "engineering_candidate",
+      "evidence": [
+        "Mock-only schema-constrained generation and deterministic fallback",
+        "Clinician-confirmed server-side context with deterministic red-flag recomputation",
+        "PostgreSQL migration 0012 with forced tenant RLS and signed/action immutability triggers",
+        "Authorized generate, read, edit, submit, reject, regenerate, sign and history API",
+        "Atomic idempotent regeneration and metadata-only transactional outbox",
+        "API-backed doctor review UI passes lint and production build",
+        "Focused unit, HTTP and live PostgreSQL integration suites pass"
+      ],
+      "remaining_release_gates": [
+        "Production Clerk/JWKS identity and non-superuser API database role",
+        "Clinical safety and representative-case approval",
+        "Privacy/security and facility governance approval",
+        "Formal accessibility/usability sessions",
+        "Production operations telemetry thresholds and recovery drills",
+        "Load, security, backup/restore and staged rollback evidence"
+      ]
+    },
+    {
+      "name": "Provider policy",
+      "status": "verified",
+      "evidence": [
+        "LLM_PROVIDER and TTS_PROVIDER default to mock while the document worker defaults to real PP-OCRv5-mobile",
+        "LLM and TTS factories reject every non-mock name; OCR accepts governed real Paddle providers",
+        "Compose contains no vLLM or generative model service",
+        "ADR-008 excludes generative providers and ADR-009 governs mock TTS"
+      ]
+    },
+    {
+      "name": "Phase 9 reviewed-record search",
+      "status": "engineering_candidate",
+      "evidence": [
+        "Only signed summaries and active clinician-reviewed document facts enter the strict Elasticsearch projection",
+        "Kafka consumer re-reads canonical PostgreSQL and commits offsets only after successful projection",
+        "Tenant, patient, facility, role and treatment-purpose authorization precedes every search",
+        "Forced-RLS metadata-only audit hashes query text and excludes returned clinical narrative",
+        "Doctor and nurse clinician search plus patient self-scoped longitudinal browser paths pass",
+        "Packaged tenant reconciliation and rebuild commands report matching canonical/index IDs",
+        "Disposable 250-record benchmark passed four English/Hindi golden queries and cross-tenant isolation"
+      ],
+      "remaining_release_gates": [
+        "Production Clerk/JWKS identity and care-relationship authorization",
+        "Representative multilingual clinical relevance evaluation with owner-approved thresholds",
+        "Projected-volume load, recovery, alias rollback and Kafka replay drills",
+        "Formal accessibility, clinical safety, privacy/security and facility approval",
+        "Managed Elasticsearch licensing, residency, encryption, backup and restore evidence"
+      ]
+    },
+    {
+      "name": "Production readiness",
+      "status": "pending",
+      "next": [
+        "Close the owner approval gates recorded in the Phase 8 and Phase 9 plans",
+        "Exercise manual downtime and database recovery runbooks",
+        "Exercise reference-only summary outbox broker outage and dead-letter recovery in staging",
+        "Run governed browser accessibility, load and security verification"
+      ]
+    }
+  ]
+}

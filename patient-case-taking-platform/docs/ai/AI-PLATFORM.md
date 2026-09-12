@@ -20,12 +20,16 @@ bounded number of times and then becomes a visibly degraded template draft.
 - source-path evidence, uncertainty and technical-completeness metadata;
 - durable edit, reject, regenerate, submit-review and doctor sign-off workflow;
 - metadata-only audit/outbox records that exclude prompts and clinical narrative.
-- deterministic local mock TTS WAV cues for assistant and emergency status;
+- deterministic local mock TTS WAV cues plus an opt-in local IndicF5 provider;
 - patient-confirmed intake persistence after editable accept/reject review.
 
-The current speech-output provider is `TTS_PROVIDER=mock`. It uses no model,
-credential or network and does not claim intelligible Hindi/English synthesis.
-It exercises the versioned API, audio playback and accessible status states only.
+The default speech-output provider is `TTS_PROVIDER=mock`. It uses no model,
+credential or network and does not claim intelligible synthesis. The optional
+`TTS_PROVIDER=indicf5` profile downloads the pinned AI4Bharat model artifacts,
+then performs synthesis locally. It must be warmed before readiness and deployed
+with ASR and LLM mock providers on the supported 6 GB GPU profile. English output
+is best-effort because the published model card lists 11 Indian languages.
+ADR-010 records the model, reference-voice, failure and resource boundaries.
 
 ASR, TTS and OCR have separate provider boundaries. The dedicated document OCR
 worker installs PaddlePaddle/PaddleOCR and defaults to the real CPU PP-OCRv5 mobile models; mock

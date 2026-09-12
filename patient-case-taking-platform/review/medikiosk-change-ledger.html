@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Evidence-led review of the MediKiosk foundation and Phase 5–9 engineering candidates.">
+  <title>MediKiosk · Phase 5–9 Engineering Review Ledger</title>
+  <style>
+    :root {
+      --paper: #f4f0e8;
+      --paper-2: #ebe4d8;
+      --ink: #142923;
+      --muted: #5d6963;
+      --line: rgba(20, 41, 35, .16);
+      --white: #fffdf8;
+      --green: #176b57;
+      --green-2: #0e4b3d;
+      --coral: #e6593f;
+      --amber: #bc7617;
+      --blue: #275f77;
+      --shadow: 0 24px 70px rgba(20, 41, 35, .12);
+      --radius: 22px;
+      --serif: Georgia, "Times New Roman", serif;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      overflow-x: clip;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 85% 0%, rgba(230, 89, 63, .12), transparent 28rem),
+        linear-gradient(90deg, transparent 49.7%, rgba(20, 41, 35, .025) 50%, transparent 50.3%),
+        var(--paper);
+      font-family: var(--sans);
+      line-height: 1.55;
+    }
+
+    a { color: inherit; }
+    button, input { font: inherit; }
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+    .skip { position: fixed; left: 1rem; top: -5rem; z-index: 100; padding: .7rem 1rem; background: var(--ink); color: white; }
+    .skip:focus { top: 1rem; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      min-height: 64px;
+      padding: .7rem clamp(1rem, 4vw, 4rem);
+      color: #f7f2e8;
+      background: rgba(20, 41, 35, .96);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(14px);
+    }
+    .brand { display: flex; align-items: center; gap: .75rem; font-weight: 800; letter-spacing: .02em; }
+    .brand-mark { width: 28px; height: 28px; border: 1px solid rgba(255,255,255,.5); border-radius: 50%; display: grid; place-items: center; color: #ff937d; }
+    .topnav { display: flex; gap: .35rem; overflow-x: auto; scrollbar-width: none; }
+    .topnav a { padding: .45rem .7rem; border-radius: 999px; color: #d9e4df; font-size: .82rem; text-decoration: none; white-space: nowrap; }
+    .topnav a:hover { background: rgba(255,255,255,.09); color: white; }
+
+    .hero {
+      min-height: 710px;
+      display: grid;
+      align-items: end;
+      padding: clamp(5rem, 10vw, 9rem) clamp(1rem, 5vw, 5rem) 4.5rem;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero::after {
+      content: "REVIEWED";
+      position: absolute;
+      right: -1rem;
+      top: 5rem;
+      color: transparent;
+      -webkit-text-stroke: 1px rgba(20, 41, 35, .12);
+      font: 900 clamp(5rem, 15vw, 14rem)/.8 var(--sans);
+      letter-spacing: -.08em;
+      transform: rotate(-4deg);
+      pointer-events: none;
+    }
+    .hero-grid { width: min(1260px, 100%); margin: auto; display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(280px, .55fr); gap: clamp(2rem, 7vw, 8rem); align-items: end; position: relative; z-index: 1; }
+    .hero-grid > *, .section-head > *, .evidence-grid > *, .boundary > *, .footer-inner > * { min-width: 0; }
+    .eyebrow { display: flex; align-items: center; gap: .7rem; color: var(--green); text-transform: uppercase; letter-spacing: .16em; font-weight: 800; font-size: .74rem; }
+    .eyebrow::before { content: ""; width: 42px; height: 2px; background: var(--coral); }
+    h1 { margin: 1rem 0 1.4rem; max-width: 850px; font: 500 clamp(3.5rem, 8vw, 7.7rem)/.88 var(--serif); letter-spacing: -.065em; }
+    .hero-copy { max-width: 760px; font-size: clamp(1.05rem, 1.6vw, 1.35rem); color: var(--muted); }
+    .hero-copy strong { color: var(--ink); }
+    .verdict-card { background: var(--ink); color: #f4f0e8; padding: 2rem; border-radius: 140px 140px 22px 22px; box-shadow: var(--shadow); }
+    .verdict-card .seal { width: 92px; height: 92px; display: grid; place-items: center; margin: 0 auto 3rem; border-radius: 50%; border: 1px solid rgba(255,255,255,.28); color: #ff937d; font: 500 2.4rem var(--serif); }
+    .verdict-card small { color: #9fada7; text-transform: uppercase; letter-spacing: .14em; font-weight: 800; }
+    .verdict-card h2 { margin: .55rem 0 1rem; font: 500 2.3rem/1 var(--serif); }
+    .verdict-card p { margin: 0; color: #c7d3ce; font-size: .95rem; }
+
+    main { overflow: hidden; }
+    .section { width: min(1260px, calc(100% - 2rem)); margin: 0 auto; padding: clamp(4.5rem, 9vw, 8rem) 0; }
+    .section + .section { border-top: 1px solid var(--line); }
+    .section-head { display: grid; grid-template-columns: minmax(0, .7fr) minmax(0, 1.3fr); gap: 2rem; margin-bottom: 3rem; align-items: end; }
+    .kicker { color: var(--coral); font: 800 .75rem var(--sans); letter-spacing: .15em; text-transform: uppercase; }
+    h2 { margin: .6rem 0 0; font: 500 clamp(2.5rem, 5vw, 5rem)/.95 var(--serif); letter-spacing: -.04em; }
+    .section-intro { max-width: 670px; margin: 0 0 .4rem auto; color: var(--muted); font-size: 1.08rem; }
+
+    .metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; overflow: hidden; border: 1px solid var(--line); border-radius: var(--radius); background: var(--line); box-shadow: var(--shadow); }
+    .metric { min-height: 210px; padding: 1.6rem; background: var(--white); display: flex; flex-direction: column; justify-content: space-between; }
+    .metric .num { font: 500 clamp(3.4rem, 6vw, 6.2rem)/.8 var(--serif); letter-spacing: -.06em; }
+    .metric .label { color: var(--muted); font-size: .86rem; text-transform: uppercase; letter-spacing: .09em; font-weight: 800; }
+    .metric em { color: var(--green); font-style: normal; }
+
+    .truth-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .truth { padding: clamp(1.4rem, 3vw, 2.5rem); border: 1px solid var(--line); border-radius: var(--radius); background: rgba(255,253,248,.66); }
+    .truth--dark { color: #f6f1e8; background: var(--green-2); border-color: transparent; }
+    .truth h3 { margin: 0 0 1.2rem; font: 500 2rem var(--serif); }
+    .truth ul { margin: 0; padding: 0; list-style: none; display: grid; gap: .8rem; }
+    .truth li { display: grid; grid-template-columns: 20px 1fr; gap: .7rem; }
+    .truth li::before { content: "✓"; color: var(--green); font-weight: 900; }
+    .truth--dark li::before { content: "○"; color: #ff937d; }
+    .truth--dark li { color: #d4dfda; }
+
+    .toolbar { display: flex; flex-wrap: wrap; gap: .6rem; margin-bottom: 1.3rem; }
+    .filter { border: 1px solid var(--line); padding: .65rem 1rem; border-radius: 999px; background: transparent; color: var(--ink); cursor: pointer; font-weight: 750; font-size: .85rem; }
+    .filter[aria-pressed="true"] { color: white; border-color: var(--ink); background: var(--ink); }
+    .findings { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+    .finding { min-height: 330px; padding: 1.5rem; background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; box-shadow: 0 12px 34px rgba(20,41,35,.06); transition: transform .25s ease, opacity .2s ease; }
+    .finding:hover { transform: translateY(-4px); }
+    .finding[hidden] { display: none; }
+    .finding-top { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+    .id { font: 700 .74rem var(--mono); color: var(--muted); }
+    .pill { display: inline-flex; align-items: center; gap: .35rem; padding: .35rem .6rem; border-radius: 999px; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; font-weight: 850; }
+    .critical { background: #fae1db; color: #9f2f1e; }
+    .high { background: #f8e8cb; color: #88500b; }
+    .medium { background: #dbe9ed; color: #1e576d; }
+    .fixed { background: #dcece6; color: var(--green-2); }
+    .finding h3 { margin: 1.2rem 0 .55rem; font: 500 1.65rem/1.1 var(--serif); }
+    .finding p { margin: 0; color: var(--muted); font-size: .91rem; }
+    .finding .repair { margin-top: auto; padding-top: 1.1rem; border-top: 1px solid var(--line); color: var(--ink); }
+    .repair strong { display: block; color: var(--green); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; }
+
+    .workflow-wrap { padding: 1rem; overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--ink); box-shadow: var(--shadow); }
+    .workflow { min-width: 1040px; width: 100%; height: auto; display: block; }
+    .workflow text { font-family: var(--sans); }
+    .workflow .box { fill: #1c382f; stroke: rgba(255,255,255,.18); stroke-width: 1; }
+    .workflow .box-live { fill: #f8f2e8; stroke: #f8f2e8; }
+    .workflow .box-gate { fill: #e6593f; stroke: #e6593f; }
+    .workflow .label-light { fill: #f6f1e8; font-size: 14px; font-weight: 700; }
+    .workflow .label-dark { fill: #142923; font-size: 14px; font-weight: 800; }
+    .workflow .sub { fill: #a7bbb3; font-size: 11px; }
+    .workflow .sub-dark { fill: #5d6963; font-size: 11px; }
+    .workflow .solid { fill: none; stroke: #9fd0bf; stroke-width: 2; marker-end: url(#arrow); }
+    .workflow .dash { fill: none; stroke: #ff937d; stroke-width: 2; stroke-dasharray: 7 7; marker-end: url(#arrow-coral); }
+    .legend { display: flex; flex-wrap: wrap; gap: 1.2rem; margin-top: 1rem; color: #c6d4cf; font-size: .82rem; }
+    .legend span::before { content: ""; display: inline-block; width: 28px; height: 2px; margin-right: .5rem; vertical-align: middle; background: #9fd0bf; }
+    .legend .planned::before { background: repeating-linear-gradient(90deg, #ff937d 0 6px, transparent 6px 10px); }
+
+    .tech-table { width: 100%; border-collapse: collapse; background: rgba(255,253,248,.72); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; display: table; }
+    .tech-table th, .tech-table td { text-align: left; padding: 1rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+    .tech-table th { color: var(--muted); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; }
+    .tech-table tr:last-child td { border-bottom: 0; }
+    .tech-table code { font: .8rem var(--mono); color: var(--green-2); }
+
+    .evidence-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: 1rem; }
+    .terminal { margin: 0; padding: 1.5rem; min-height: 440px; overflow: auto; color: #dce8e3; background: #0d1d18; border-radius: var(--radius); font: .86rem/1.75 var(--mono); box-shadow: var(--shadow); }
+    .terminal { max-width: 100%; }
+    .terminal .prompt { color: #ff937d; }
+    .terminal .ok { color: #9fd0bf; }
+    .terminal .note { color: #a0ada8; }
+    .gates { display: grid; gap: .65rem; }
+    .gate { display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: .8rem; padding: 1rem; border: 1px solid var(--line); border-radius: 15px; background: var(--white); }
+    .gate .check { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: #dcece6; color: var(--green); font-weight: 900; }
+    .gate strong { display: block; font-size: .9rem; }
+    .gate small { color: var(--muted); }
+    .gate code { font: .72rem var(--mono); color: var(--green); }
+
+    .boundary { display: grid; grid-template-columns: .8fr 1.2fr; gap: 1rem; }
+    .boundary-callout { padding: 2.2rem; color: white; background: var(--coral); border-radius: var(--radius); }
+    .boundary-callout .huge { font: 500 4rem/.9 var(--serif); }
+    .boundary-callout p { color: #fff0eb; }
+    .next-list { counter-reset: next; display: grid; gap: .7rem; }
+    .next { counter-increment: next; display: grid; grid-template-columns: 54px 1fr; gap: 1rem; padding: 1.1rem; background: var(--white); border: 1px solid var(--line); border-radius: 15px; }
+    .next::before { content: "0" counter(next); font: 700 1.1rem var(--mono); color: var(--coral); }
+    .next strong { display: block; }
+    .next span { color: var(--muted); font-size: .88rem; }
+
+    footer { margin-top: 4rem; padding: 3rem clamp(1rem, 5vw, 5rem); color: #d5dfda; background: var(--ink); }
+    .footer-inner { width: min(1260px, 100%); margin: auto; display: flex; justify-content: space-between; gap: 2rem; align-items: end; }
+    footer .signoff { font: 500 2.4rem var(--serif); color: white; }
+    footer small { color: #92a39c; }
+    footer a { color: #ff937d; }
+
+    .reveal { opacity: 0; transform: translateY(16px); transition: opacity .55s ease, transform .55s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+
+    @media (max-width: 900px) {
+      .topnav { display: none; }
+      .hero { min-height: auto; }
+      .hero-grid, .section-head, .evidence-grid, .boundary { grid-template-columns: 1fr; }
+      .verdict-card { max-width: 480px; border-radius: var(--radius); }
+      .verdict-card .seal { margin: 0 0 2rem; }
+      .section-intro { margin-left: 0; }
+      .metrics { grid-template-columns: 1fr 1fr; }
+      .findings { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 600px) {
+      h1 { font-size: 3.6rem; }
+      .hero::after { display: none; }
+      .metrics, .truth-grid, .findings { grid-template-columns: 1fr; }
+      .metric { min-height: 160px; }
+      .tech-table, .tech-table tbody, .tech-table tr, .tech-table td { display: block; }
+      .tech-table thead { display: none; }
+      .tech-table tr { border-bottom: 1px solid var(--line); padding: .8rem; }
+      .tech-table td { border: 0; padding: .35rem .5rem; }
+      .tech-table td::before { content: attr(data-label); display: block; color: var(--muted); font-size: .66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+      .footer-inner { align-items: start; flex-direction: column; }
+      .hero-copy, .verdict-card p, .next span { overflow-wrap: anywhere; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .reveal { opacity: 1; transform: none; }
+    }
+    @media print {
+      .topbar, .toolbar { display: none; }
+      body { background: white; }
+      .hero { min-height: auto; padding-top: 2rem; }
+      .section { break-inside: avoid; padding: 2.5rem 0; }
+      .finding { break-inside: avoid; }
+      .reveal { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to review</a>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">M</span> MediKiosk / Engineering Review</div>
+    <nav class="topnav" aria-label="Report sections">
+      <a href="#verdict">Verdict</a><a href="#findings">Repairs</a><a href="#workflow">Workflow</a><a href="#technology">Technology</a><a href="#evidence">Evidence</a><a href="#phase7">Phase 7</a><a href="#phase8">Phase 8</a><a href="#patient">Patient</a><a href="#phase9">Phase 9</a><a href="#boundary">Boundary</a>
+    </nav>
+  </header>
+
+  <main id="content">
+    <section class="hero" id="verdict">
+      <div class="hero-grid">
+        <div>
+          <div class="eyebrow">Phase 5–9 engineering review · updated 6 September 2026</div>
+          <h1>Reviewed evidence.<br>Scoped retrieval.<br><em style="color:var(--green);font-style:italic">Approval still matters.</em></h1>
+          <p class="hero-copy">Phase 7 uses real CPU PP-OCRv5 and promotes only clinician-reviewed document facts. Phase 8 turns confirmed context into editable, rejectable and signable mock-provider summaries. Phase 9 adds authorized lexical search and longitudinal context over those reviewed sources. This is a locally integration-tested engineering candidate—not clinical validation or production authorization.</p>
+        </div>
+        <aside class="verdict-card" aria-label="Review verdict">
+          <div class="seal">✓</div>
+          <small>Current disposition</small>
+          <h2>Engineering candidate</h2>
+          <p>Accept the implementation for continued review. Keep real-patient rollout closed until representative OCR/extraction evidence, production security controls, accessibility sessions, recovery drills and named owner approvals are recorded.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="metrics" aria-label="Review metrics">
+        <div class="metric"><span class="num">376</span><span class="label">API tests <em>passing</em></span></div>
+        <div class="metric"><span class="num">3</span><span class="label">Live Phase 9 integration tests</span></div>
+        <div class="metric"><span class="num">3/3</span><span class="label">Web apps linted & built</span></div>
+        <div class="metric"><span class="num">4/4</span><span class="label">Search golden queries</span></div>
+      </div>
+    </section>
+
+    <section class="section reveal">
+      <div class="section-head">
+        <div><span class="kicker">01 · Truth model</span><h2>What exists—and what does not.</h2></div>
+        <p class="section-intro">A file is not a feature, a router is not a secured service, and a unit test is not production evidence. The ledger now uses those distinctions consistently.</p>
+      </div>
+      <div class="truth-grid">
+        <article class="truth">
+          <h3>Verified foundation</h3>
+          <ul>
+            <li>Patient, clinician, and admin Next.js shells compile on the current Active LTS line.</li>
+            <li>FastAPI passes Ruff, mypy across 160 source files, and 376 behavioral tests with 25 explicit provider/integration skips.</li>
+            <li>Readiness checks real Postgres, MongoDB, and Redis connectivity and returns 503 when unavailable.</li>
+            <li>The 20-service Compose topology parses without vLLM or a generative-model service; Postgres, MongoDB, Redis, MinIO and ClamAV have local integration evidence.</li>
+            <li>Phase 7 has forced tenant RLS, private quarantine, bounded workers, immutable OCR/extraction artifacts, review history, reviewed-fact promotion and Kafka outbox delivery.</li>
+            <li>Hindi hospital-noise proxy WER is 14.21%; spontaneous Indian-English WER is 6.36%. Patient voice review and touch fallback compile in the production kiosk.</li>
+          </ul>
+        </article>
+        <article class="truth truth--dark">
+          <h3>Still a production boundary</h3>
+          <ul>
+            <li>No Clerk signature, issuer, audience, key-rotation, or webhook verification is wired.</li>
+            <li>Clerk/hospital SSO, durable Phase 6 alerts, legally recognized clinical signatures and break-glass remain outside the engineering candidate.</li>
+            <li>Local Compose uses development credentials and a shared PostgreSQL superuser; production service identities, TLS, secrets and least-privilege grants remain unproved.</li>
+            <li>The seven-fixture extraction report does not measure real OCR, handwriting, camera capture, lab tables or clinical outcomes; release thresholds are intentionally null.</li>
+            <li>No staging accessibility/usability, load/security, backup/restore, outage/replay or deployment rollback approval exists.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="findings">
+      <div class="section-head">
+        <div><span class="kicker">02 · Remediation ledger</span><h2>Twenty-nine repairs that changed the risk.</h2></div>
+        <p class="section-intro">Filter by original severity. Each card states the defect found in the OpenCode output and the concrete change retained in the repository.</p>
+      </div>
+      <div class="toolbar" role="group" aria-label="Filter findings">
+        <button class="filter" data-filter="all" aria-pressed="true">All · 29</button>
+        <button class="filter" data-filter="critical" aria-pressed="false">Critical · 6</button>
+        <button class="filter" data-filter="high" aria-pressed="false">High · 15</button>
+        <button class="filter" data-filter="medium" aria-pressed="false">Medium · 8</button>
+      </div>
+      <div class="findings">
+        <article class="finding" data-severity="critical"><div class="finding-top"><span class="id">SEC-01</span><span class="pill critical">Critical</span></div><h3>Synthetic clinical APIs looked deployable</h3><p>In-memory patient, encounter, consent, audit, AYUSH, FHIR, session, and development-token routes were included by default without real Clerk or persistence.</p><div class="repair"><strong>Repaired</strong>All business routers now require explicit <code>ENABLE_DEMO_ROUTES=true</code>; default startup exposes health only.</div></article>
+        <article class="finding" data-severity="critical"><div class="finding-top"><span class="id">SEC-02</span><span class="pill critical">Critical</span></div><h3>Credentialed wildcard CORS</h3><p>The API allowed every origin, method, and header while enabling credentials—an unsafe and browser-incompatible policy.</p><div class="repair"><strong>Repaired</strong>Explicit development origins, limited methods and limited request headers; cross-origin credentials disabled.</div></article>
+        <article class="finding" data-severity="critical"><div class="finding-top"><span class="id">DEP-03</span><span class="pill critical">Critical</span></div><h3>Frontend baseline carried high advisories</h3><p>All three apps used a broad Next.js 14 range; dependency resolution reported five high-severity findings per application.</p><div class="repair"><strong>Repaired</strong>Next.js 16.3.3 Active LTS, React 19, fresh lockfiles, and zero known npm audit vulnerabilities.</div></article>
+
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">OPS-04</span><span class="pill high">High</span></div><h3>Readiness checked imports, not dependencies</h3><p><code>/readyz</code> returned “ok” when client libraries existed even if every datastore was offline.</p><div class="repair"><strong>Repaired</strong>Bounded async ping probes, per-dependency results, cleanup, and HTTP 503 on any unavailable required dependency.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">CI-05</span><span class="pill high">High</span></div><h3>CI executed from the wrong directory</h3><p>Workflow commands assumed <code>apps/</code> lived at repository root; the project actually lives under <code>patient-case-taking-platform/</code>.</p><div class="repair"><strong>Repaired</strong>Job working directories now match repository layout and commands match the declared Python and Node projects.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">PY-06</span><span class="pill high">High</span></div><h3>Python project could not install</h3><p>The declared setuptools backend was not importable, so a clean editable install failed before tests or type checks.</p><div class="repair"><strong>Repaired</strong>Standard <code>setuptools.build_meta</code> backend plus a verified dev installation.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">WEB-07</span><span class="pill high">High</span></div><h3>No reproducible frontend dependency graph</h3><p>Dockerfiles and CI used inconsistent install commands while no package lockfiles existed.</p><div class="repair"><strong>Repaired</strong>Fresh per-app lockfiles, <code>npm ci</code> in CI and containers, consistent Active LTS dependencies.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">WEB-08</span><span class="pill high">High</span></div><h3>Kiosk could not survive a production build</h3><p>A server component passed an event callback into a client component, violating the React Server Component boundary.</p><div class="repair"><strong>Repaired</strong>The interactive landing surface is explicitly client-side and persists language choice locally.</div></article>
+
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">A11Y-09</span><span class="pill medium">Medium</span></div><h3>Interactive markup nested a button in a link</h3><p>The kiosk wrapped button elements with anchors, producing invalid interactive nesting and ambiguous keyboard behavior.</p><div class="repair"><strong>Repaired</strong>Links receive a shared action style directly; form buttons remain semantic buttons.</div></article>
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">CTR-10</span><span class="pill medium">Medium</span></div><h3>Containers were inconsistent and privileged</h3><p>Only one app used standalone output; runners varied, copied full dependencies, and ran as root.</p><div class="repair"><strong>Repaired</strong>Standalone output for all apps, Node 22 builders, minimal runtime copies, and non-root runtime users; API is non-root too.</div></article>
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">EVT-11</span><span class="pill medium">Medium</span></div><h3>Kafka advertised one unusable address</h3><p>The broker told host clients to connect to the container hostname, so localhost connections would fail after bootstrap.</p><div class="repair"><strong>Repaired</strong>Separate internal and external listeners with the API using the internal broker address.</div></article>
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">DOC-12</span><span class="pill medium">Medium</span></div><h3>The ledger called prototypes “complete”</h3><p>Phase 1, auth, persistence, audit, FHIR, and CI were marked complete based mainly on file creation. A second ADR tree duplicated canonical decisions.</p><div class="repair"><strong>Repaired</strong>Evidence-based status vocabulary, explicit limits, and one canonical ADR location.</div></article>
+        <article class="finding" data-severity="critical"><div class="finding-top"><span class="id">AI-13</span><span class="pill critical">Critical</span></div><h3>ASR upload discarded the patient’s audio</h3><p>The multipart smoke request looked real, but the endpoint accepted no file parameter and always transcribed generated zero bytes.</p><div class="repair"><strong>Repaired</strong>The REST contract now consumes the uploaded file, validates type, emptiness and size, and returns bounded provider failures.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">AI-14</span><span class="pill high">High</span></div><h3>Browser audio chunks formed a corrupt stream</h3><p>Every processor callback emitted a new WAV header and the API concatenated those files; the browser also labelled native-rate samples as 16 kHz.</p><div class="repair"><strong>Repaired</strong>The kiosk downsamples to 16 kHz PCM16, preserves message ordering while the socket connects, and the API creates one valid WAV container.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">AI-15</span><span class="pill high">High</span></div><h3>Model scripts executed during test discovery</h3><p>Pytest collection could start Uvicorn, download large gated models, consume GPU memory, write fixtures, or wait ten minutes.</p><div class="repair"><strong>Repaired</strong>Real-model and subprocess suites require explicit environment flags; default CI stays deterministic and side-effect free.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">AI-16</span><span class="pill high">High</span></div><h3>Clinical confidence values were invented</h3><p>ASR and OCR returned hard-coded 0.92 and 0.90 scores even when the provider response exposed no calibrated confidence.</p><div class="repair"><strong>Repaired</strong>Confidence is nullable and only populated when a provider supplies a real score.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">AI-17</span><span class="pill high">High</span></div><h3>OCR configuration was ignored</h3><p><code>OCR_PROVIDER=mock</code> still instantiated PaddleOCR-VL, forcing heavyweight dependencies into demos and smoke tests.</p><div class="repair"><strong>Repaired</strong>The registry now honors configuration. Routine documents use PP-OCRv5; the 0.9B vision-language pipeline is an explicit complex-layout fallback.</div></article>
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">API-18</span><span class="pill medium">Medium</span></div><h3>AI boundaries were unbounded and leaky</h3><p>WebSocket audio grew without limit, base64 OCR accepted malformed or oversized payloads, and raw provider exceptions were returned.</p><div class="repair"><strong>Repaired</strong>15 MB audio and 10 MB image ceilings, strict base64 validation, typed media allowlists, and sanitized 503 responses.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">PH4-19</span><span class="pill high">High</span></div><h3>Voice could not degrade safely</h3><p>No microphone diagnostic, ordered end-of-stream contract, transcript correction step, unsupported-language guard, or reliable touch fallback protected patient progress.</p><div class="repair"><strong>Repaired</strong>Device checks, ordered PCM16 delivery, cumulative partials, editable confirmation, clarification signals, and explicit touch fallback.</div></article>
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">PH4-20</span><span class="pill medium">Medium</span></div><h3>Latency and accuracy claims lacked a cohort</h3><p>Single fixture timing could not establish Hindi/English behavior in Indian hospital conditions, and the original p95 calculation understated small-sample tails.</p><div class="repair"><strong>Repaired</strong>Provenance-bearing Hindi noisy, 5 dB hospital-ambient proxy, and spontaneous Indian-English manifests; nearest-rank p95 and explicit proxy limitations.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">PH5-21</span><span class="pill high">High</span></div><h3>Clinical dialogue had no approved provider boundary</h3><p>A future-model architecture was documented, but no bounded, replaceable task contract could prove safe behavior without downloading weights or sending patient text externally.</p><div class="repair"><strong>Repaired</strong>Versioned Pydantic dialogue and summary contracts route only to an offline deterministic mock; unsupported providers fail closed.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">PH5-22</span><span class="pill high">High</span></div><h3>Voice answers did not change the interview</h3><p>Confirmed transcripts advanced a fixed form, so voice capture and the clinical dialogue service remained disconnected.</p><div class="repair"><strong>Repaired</strong>The assisted route sends each confirmed transcript under the returned SOCRATES domain and renders the next mock-provider question.</div></article>
+        <article class="finding" data-severity="critical"><div class="finding-top"><span class="id">PH5-23</span><span class="pill critical">Critical</span></div><h3>Warning symptoms could remain inside routine questioning</h3><p>A patient-facing assistant needs a deterministic interruption that is perceivable without relying on colour, animation, or visual attention alone.</p><div class="repair"><strong>Repaired</strong>Deterministic rules bypass SOCRATES, move focus to an assertive bilingual alert, hide internal rule identifiers from the patient, and direct immediate staff escalation.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">PH5-24</span><span class="pill high">High</span></div><h3>Generated text lacked an explicit rejection path</h3><p>Showing an AI-authored clinical draft without a clear reject state risks implying that it already belongs to the medical record.</p><div class="repair"><strong>Repaired</strong>Patient confirmation remains editable, and the clinician can edit, sign, or reject the unsigned draft; rejection explicitly records that nothing was signed.</div></article>
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">OPS-25</span><span class="pill medium">Medium</span></div><h3>The Compose override described a different application</h3><p>The automatically loaded override tried to run the Python API as Node, mounted nonexistent paths, and excluded the shared design-system package.</p><div class="repair"><strong>Repaired</strong>FastAPI reload and all three Next.js development mounts now match the repository. Phase 5 explicitly requires no vLLM service, weights, GPU, or external model API.</div></article>
+        <article class="finding" data-severity="critical"><div class="finding-top"><span class="id">PH6-26</span><span class="pill critical">Critical</span></div><h3>Two warning-rule authorities could disagree</h3><p>The legacy rules engine and the Phase 5 LLM ontology each owned separate red-flag terms, IDs, and behavior.</p><div class="repair"><strong>Repaired</strong>Phase 5 dialogue and summaries now call one canonical prototype evaluator; the duplicate LLM warning table was removed.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">PH6-27</span><span class="pill high">High</span></div><h3>Triggered rules lacked review metadata</h3><p>Earlier results did not carry a rule version, ruleset version, owner role, explanation code, approval status, or source evidence paths.</p><div class="repair"><strong>Repaired</strong>Immutable rule results now expose stable versions, triage-nurse ownership, controlled explanation codes, path-only evidence, and an explicit prototype-only status.</div></article>
+        <article class="finding" data-severity="high"><div class="finding-top"><span class="id">PH6-28</span><span class="pill high">High</span></div><h3>Rule silence had no safe contract</h3><p>An empty result could be misread as a routine triage classification even though it only meant that configured rules did not match.</p><div class="repair"><strong>Repaired</strong>The evaluation contract returns <code>no_configured_flag</code> plus <code>no_match_is_not_safe_or_routine=true</code>; inputs and evidence keys are bounded.</div></article>
+        <article class="finding" data-severity="medium"><div class="finding-top"><span class="id">PH6-29</span><span class="pill medium">Medium</span></div><h3>Internal rule IDs appeared in emergency copy</h3><p>The patient alert displayed implementation identifiers that added anxiety without helping the patient call staff.</p><div class="repair"><strong>Repaired</strong>The accessible emergency state now says routine questions are paused while rule IDs remain in staff/API evidence only.</div></article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="workflow">
+      <div class="section-head">
+        <div><span class="kicker">03 · Communication map</span><h2>How the system communicates now.</h2></div>
+        <p class="section-intro">Solid mint paths are exercised scaffold paths. Dashed coral paths are architectural intentions that still require adapters, security controls, and integration evidence.</p>
+      </div>
+      <div class="workflow-wrap">
+        <svg class="workflow" viewBox="0 0 1180 630" role="img" aria-labelledby="flow-title flow-desc">
+          <title id="flow-title">NotMID application and service communication workflow</title>
+          <desc id="flow-desc">Users access three Next.js applications. The patient kiosk streams ordered PCM audio to FastAPI, confirms the transcript, and sends the confirmed answer to an offline SOCRATES provider. The canonical Phase 6 ruleset can interrupt dialogue. Phase 8 assembles confirmed evidence into a mock-provider draft that clinicians can edit, reject, regenerate, review and sign.</desc>
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#9fd0bf"/></marker>
+            <marker id="arrow-coral" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#ff937d"/></marker>
+          </defs>
+          <text x="40" y="45" class="sub">SURFACES</text><text x="410" y="45" class="sub">APPLICATION BOUNDARY</text><text x="825" y="45" class="sub">PLATFORM CAPABILITIES</text>
+          <rect class="box-live" x="40" y="75" width="250" height="95" rx="18"/><text class="label-dark" x="65" y="112">Patient kiosk / PWA</text><text class="sub-dark" x="65" y="138">Voice answer · adaptive SOCRATES · touch fallback</text>
+          <rect class="box-live" x="40" y="205" width="250" height="95" rx="18"/><text class="label-dark" x="65" y="242">Clinician console</text><text class="sub-dark" x="65" y="268">Evidence · edit · reject · review · sign</text>
+          <rect class="box-live" x="40" y="335" width="250" height="95" rx="18"/><text class="label-dark" x="65" y="372">Administration console</text><text class="sub-dark" x="65" y="398">Users · facilities · audit placeholders</text>
+
+          <rect class="box" x="410" y="75" width="290" height="95" rx="18"/><text class="label-light" x="438" y="112">Edge / API gateway</text><text class="sub" x="438" y="138">NGINX, rate limits, Clerk token pass-through</text>
+          <rect class="box-live" x="410" y="215" width="290" height="100" rx="18"/><text class="label-dark" x="438" y="252">FastAPI clinical workflow</text><text class="sub-dark" x="438" y="278">voice · rules · confirmed context · mock draft</text>
+          <rect class="box-live" x="410" y="360" width="290" height="100" rx="18"/><text class="label-dark" x="438" y="397">Durable summary lifecycle</text><text class="sub-dark" x="438" y="423">RLS · versions · actions · immutable sign</text>
+
+          <rect class="box" x="825" y="75" width="300" height="85" rx="18"/><text class="label-light" x="852" y="108">Clerk + hospital SSO</text><text class="sub" x="852" y="133">JWT validation and identity mapping pending</text>
+          <rect class="box" x="825" y="190" width="300" height="85" rx="18"/><text class="label-light" x="852" y="223">Redis · encrypted S3</text><text class="sub" x="852" y="248">Voice adapters built · deployment proof pending</text>
+          <rect class="box-live" x="825" y="305" width="300" height="85" rx="18"/><text class="label-dark" x="852" y="338">Kafka / Redpanda</text><text class="sub-dark" x="852" y="363">Leased document + summary outboxes</text>
+          <rect class="box-gate" x="825" y="420" width="300" height="85" rx="18"/><text class="label-light" x="852" y="453">AI adapter plane</text><text class="sub" x="852" y="478">AI4Bharat Hindi · Whisper en-IN · PaddleOCR</text>
+          <rect class="box" x="825" y="535" width="300" height="65" rx="18"/><text class="label-light" x="852" y="575">ABDM · SMS · WhatsApp · search</text>
+
+          <path class="dash" d="M290 122 C350 122 350 122 410 122"/><path class="dash" d="M290 252 C350 252 350 145 410 132"/><path class="dash" d="M290 382 C355 382 350 145 410 138"/>
+          <path class="solid" d="M555 170 L555 215"/><path class="solid" d="M555 315 L555 360"/>
+          <path class="dash" d="M700 115 C755 115 770 115 825 115"/><path class="dash" d="M700 255 C760 255 765 232 825 232"/><path class="dash" d="M700 405 C760 405 765 347 825 347"/><path class="dash" d="M700 420 C755 420 770 462 825 462"/><path class="dash" d="M975 505 L975 535"/>
+        </svg>
+        <div class="legend"><span>Verified scaffold path</span><span class="planned">Planned or demo-only integration</span></div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="technology">
+      <div class="section-head">
+        <div><span class="kicker">04 · Technology disposition</span><h2>Chosen, used, or merely named.</h2></div>
+        <p class="section-intro">The architecture remains intentionally microservice-light. These labels show what the current repository actually proves.</p>
+      </div>
+      <table class="tech-table">
+        <thead><tr><th>Technology</th><th>Project use</th><th>Current evidence</th><th>Disposition</th></tr></thead>
+        <tbody>
+          <tr><td data-label="Technology"><strong>Next.js 16 + React 19</strong></td><td data-label="Project use">Patient, clinician, administration web surfaces</td><td data-label="Current evidence">Three production builds; standalone container output</td><td data-label="Disposition"><span class="pill fixed">Verified shell</span></td></tr>
+          <tr><td data-label="Technology"><strong>FastAPI + Pydantic</strong></td><td data-label="Project use">HTTP/WebSocket boundary, contracts, rules and durable workflows</td><td data-label="Current evidence">Ruff and mypy pass; full backend suite covers authorization, transitions and persistence</td><td data-label="Disposition"><span class="pill fixed">Engineering candidate</span></td></tr>
+          <tr><td data-label="Technology"><strong>Clerk</strong></td><td data-label="Project use">Web authentication; internal identity mapping</td><td data-label="Current evidence">Configuration names and demo token sketch only</td><td data-label="Disposition"><span class="pill high">Not integrated</span></td></tr>
+          <tr><td data-label="Technology"><strong>Postgres</strong></td><td data-label="Project use">Documents, confirmed context, versioned summaries, append-only actions/outboxes and search-access audit</td><td data-label="Current evidence">Fourteen repeatable migrations, forced tenant RLS, optimistic concurrency, signed-record immutability and live Phase 8–9 integration</td><td data-label="Disposition"><span class="pill fixed">Clinical source of truth</span></td></tr>
+          <tr><td data-label="Technology"><strong>MongoDB / Redis / MinIO</strong></td><td data-label="Project use">Immutable OCR/extraction artifacts, ephemeral state, private source/page objects</td><td data-label="Current evidence">Live Mongo and MinIO pipeline tests; exact-object short-lived grants; anonymous object denial</td><td data-label="Disposition"><span class="pill fixed">Phase 7 local evidence</span></td></tr>
+          <tr><td data-label="Technology"><strong>Kafka</strong></td><td data-label="Project use">Reference-only document/summary transport and search synchronization</td><td data-label="Current evidence">Outbox publishers use leases and bounded retry; the Phase 9 consumer re-reads canonical rows and commits offsets only after projection succeeds</td><td data-label="Disposition"><span class="pill fixed">Local delivery candidate</span></td></tr>
+          <tr><td data-label="Technology"><strong>FHIR R4 / AYUSH models</strong></td><td data-label="Project use">Interoperability and domain contract exploration</td><td data-label="Current evidence">In-memory transformations and unit tests in demo surface</td><td data-label="Disposition"><span class="pill medium">Prototype</span></td></tr>
+          <tr><td data-label="Technology"><strong>AI4Bharat ASR + Whisper small.en</strong></td><td data-label="Project use">Hindi and English voice intake with explicit language packs</td><td data-label="Current evidence">Hospital-noise Hindi proxy: 14.21% WER / 0.63 s warm p95. Spontaneous Indian English: 6.36% WER / 5.37 s warm p95 on CPU</td><td data-label="Disposition"><span class="pill fixed">Phase 4 verified locally</span></td></tr>
+          <tr><td data-label="Technology"><strong>PP-OCRv5 + PaddleOCR-VL</strong></td><td data-label="Project use">Real routine OCR with an explicitly gated complex-layout provider</td><td data-label="Current evidence">Dedicated PaddlePaddle/PaddleOCR worker image, persistent model cache, real PP-OCRv5-mobile recognition check and durable page/region provenance; representative clinical evaluation remains pending</td><td data-label="Disposition"><span class="pill fixed">Real provider verified</span></td></tr>
+          <tr><td data-label="Technology"><strong>Offline clinical mock</strong></td><td data-label="Project use">Adaptive SOCRATES questions and Phase 8 evidence-linked summary drafts</td><td data-label="Current evidence">Fail-closed schemas, server-assembled context, deterministic flags, clinician edits and connected patient/doctor UI; no network inference</td><td data-label="Disposition"><span class="pill fixed">Only approved provider</span></td></tr>
+          <tr><td data-label="Technology"><strong>Versioned Python rules engine</strong></td><td data-label="Project use">Canonical deterministic warning evaluation and Phase 5 interruption</td><td data-label="Current evidence">Eight focused tests cover Hindi/English mapping, negation, rule ownership/versioning, no-match semantics, bounded API input and PHI-minimized audit</td><td data-label="Disposition"><span class="pill medium">Phase 6 prototype · durable alerts pending</span></td></tr>
+          <tr><td data-label="Technology"><strong>External model serving</strong></td><td data-label="Project use">None</td><td data-label="Current evidence">ADR-008 excludes HiMed, vLLM and hosted model APIs; unsupported provider values fail closed</td><td data-label="Disposition"><span class="pill fixed">Excluded</span></td></tr>
+          <tr><td data-label="Technology"><strong>Elasticsearch 9.3</strong></td><td data-label="Project use">Derived lexical search over signed summaries and active reviewed facts</td><td data-label="Current evidence">Strict mapping, safe query builder, facets/highlights, event projection, tenant repair/reconciliation, FHIR/CSV APIs and real-container tests</td><td data-label="Disposition"><span class="pill fixed">Phase 9 engineering candidate</span></td></tr>
+          <tr><td data-label="Technology"><strong>Docker Compose + GitHub Actions</strong></td><td data-label="Project use">Local topology and CI quality gates</td><td data-label="Current evidence">Compose parses and all local services start; API/frontends/workers build; live Phase 7 suite passes</td><td data-label="Disposition"><span class="pill fixed">Local topology verified</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="section reveal" id="evidence">
+      <div class="section-head">
+        <div><span class="kicker">05 · Verification evidence</span><h2>Checks run, not checks imagined.</h2></div>
+        <p class="section-intro">The full local topology and the Phase 7 document path were executed. The remaining boundary is representative clinical evaluation and production operational evidence.</p>
+      </div>
+      <div class="evidence-grid">
+        <pre class="terminal" aria-label="Verification command summary"><span class="prompt">$</span> npm run lint && npm run build <span class="note"># patient kiosk</span>
+<span class="ok">✓ ESLint clean
+✓ Next.js 16.3.3 production build
+✓ 9 product routes</span>
+
+<span class="prompt">$</span> npm run lint && npm run build <span class="note"># clinician</span>
+<span class="ok">✓ ESLint clean
+✓ production build
+✓ clinical search route included</span>
+
+<span class="prompt">$</span> npm run lint && npm run build <span class="note"># admin</span>
+<span class="ok">✓ ESLint clean
+✓ production build
+✓ 7 static routes</span>
+
+<span class="prompt">$</span> ruff check apps/api
+<span class="ok">All checks passed!</span>
+
+<span class="prompt">$</span> mypy app
+<span class="ok">Success: no issues found in 160 source files</span>
+
+<span class="prompt">$</span> pytest apps/api/tests -q
+<span class="ok">376 passed · 25 provider/integration tests skipped by policy</span>
+
+<span class="prompt">$</span> docker compose run --rm --no-deps document-ocr-worker python -m tools.verify_real_ocr
+<span class="ok">PASS provider=paddleocr_fast model=PP-OCRv5-mobile
+✓ 3 recognized regions · METFORMIN 500 asserted</span>
+
+<span class="prompt">$</span> PHASE7_INTEGRATION=1 pytest ...
+<span class="ok">11 passed · Postgres + MinIO + MongoDB + ClamAV
+✓ quarantine → scan → normalize → OCR
+✓ manual source review → authoritative fact
+✓ timeline + FHIR + search projection</span>
+
+<span class="prompt">$</span> docker compose run --rm search-index-worker python -m tools.verify_phase9_search ...
+<span class="ok">PASS · Elasticsearch 9.3.0
+✓ 250 visible + 1 cross-tenant control record
+✓ 4 / 4 English/Hindi golden queries
+✓ 250 canonical IDs = 250 indexed IDs</span>
+
+<span class="prompt">$</span> browser: doctor · nurse · patient
+<span class="ok">✓ reviewed-record search + canonical timeline
+✓ doctor export control · nurse denial message
+✓ bilingual patient self-scoped longitudinal view
+✓ no browser-console errors</span>
+
+<span class="prompt">$</span> python tools/evaluate_phase7_extraction.py ...
+<span class="ok">7 / 7 synthetic fixtures exact
+1.0 candidate match · source link · warning match</span>
+
+<span class="prompt">$</span> docker compose config --quiet
+<span class="ok">✓ parsed · 20 services · no vLLM/generative-model service</span>
+
+<span class="note">Still required: governed real-document evaluation,
+accessibility sessions, load/security, backup/restore and staging rollback drills.</span></pre>
+        <div class="gates">
+          <div class="gate"><span class="check">✓</span><div><strong>Frontend dependency integrity</strong><small>Fresh locks and audits</small></div><code>0 findings × 3</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Frontend compilation</strong><small>Patient, clinician, admin</small></div><code>3 / 3</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Python packaging</strong><small>Editable project install</small></div><code>passed</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Static quality</strong><small>Ruff and mypy</small></div><code>160 app files</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Behavioral tests</strong><small>Domain, voice, dialogue, triage, document, summary and search contracts</small></div><code>376 passed</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Phase 6 canonical evaluator</strong><small>Versions, ownership, evidence paths, negation and bounded demo API</small></div><code>8 focused tests</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Voice quality</strong><small>Hindi hospital proxy + spontaneous Indian English</small></div><code>14.21% · 6.36% WER</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Patient voice surface</strong><small>Fixed + adaptive assisted intake compile</small></div><code>9 routes</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Real OCR execution</strong><small>Official PP-OCRv5 mobile detector + recognizer in the worker image</small></div><code>METFORMIN 500</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Phase 7 live integration</strong><small>Four durable dependencies and end-to-end promotion</small></div><code>11 passed</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Phase 8 workflow</strong><small>Mock generation, role gates, evidence, lifecycle and outbox</small></div><code>15 focused · 5 live</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Phase 9 search</strong><small>Reviewed-only projection, scope enforcement, audit, repair and longitudinal UI</small></div><code>4 golden · IDs match</code></div>
+          <div class="gate"><span class="check">✓</span><div><strong>Browser review</strong><small>Semantic headings, status/live region, bilingual error state, clean console and responsive layout</small></div><code>passed</code></div>
+          <div class="gate"><span class="check">!</span><div><strong>Controlled rollout</strong><small>Representative evidence and owner signatures</small></div><code>pending</code></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section reveal" id="phase7">
+      <div class="section-head">
+        <div><span class="kicker">06 · Phase 7 ledger</span><h2>Implemented controls, honest boundary.</h2></div>
+        <p class="section-intro">The software path is durable and review-gated. The evaluation and governance path is deliberately incomplete until accountable owners approve real evidence.</p>
+      </div>
+      <div class="truth-grid">
+        <article class="truth">
+          <h3>Engineering candidate</h3>
+          <ul>
+            <li>Authorized idempotent registration, consent/purpose checks, private quarantine and abandoned-upload cleanup.</li>
+            <li>ClamAV scan, bounded PDF/image normalization and immutable source/page/OCR/extraction artifacts.</li>
+            <li>Keyboard-first bilingual review with short-lived page preview, source geometry, manual entry and append-only decisions.</li>
+            <li>Accepted/corrected-only promotion, document-stated semantics, audited withdrawal and rebuildable timeline/FHIR/search projections.</li>
+            <li>Kafka outbox delivery, bounded retry/dead-letter, PHI-free operations counts and OCR/extraction kill switches.</li>
+          </ul>
+        </article>
+        <article class="truth truth--dark">
+          <h3>Release gate remains closed</h3>
+          <ul>
+            <li>Clinical safety, privacy/security, accessibility, facility operations and engineering approvals are unsigned.</li>
+            <li>Seven original synthetic regions are parser evidence only; they do not establish OCR or clinical accuracy.</li>
+            <li>Handwriting, real capture quality and lab-table extraction are excluded; lab support is deferred by design.</li>
+            <li>Production roles, encryption, retention/legal hold, incident response, backup/restore and rollback drills need deployment evidence.</li>
+            <li>No claim of clinical validation, DPDP compliance or production readiness is supported.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="phase8">
+      <div class="section-head">
+        <div><span class="kicker">07 · Phase 8 ledger</span><h2>A draft the clinician controls.</h2></div>
+        <p class="section-intro">Generation is bounded to confirmed sources and the offline mock. A summary remains visibly unsigned until a doctor reviews and locks it.</p>
+      </div>
+      <div class="truth-grid">
+        <article class="truth">
+          <h3>Engineering candidate</h3>
+          <ul>
+            <li>Server-assembled confirmed intake, deterministic flags and active reviewed document facts; client narrative injection is rejected.</li>
+            <li>Tenant/facility authorization, forced RLS, optimistic versions, payload-bound idempotency and atomic regeneration.</li>
+            <li>Editable drafts with clinician-edit provenance, reject/regenerate lineage, append-only actions and signed-record immutability.</li>
+            <li>Metadata-only transactional outbox delivery with leases, bounded retry and dead-letter state.</li>
+            <li>Accessible doctor states, evidence display, visible local login and a browser-tested edit → review → immutable sign path.</li>
+          </ul>
+        </article>
+        <article class="truth truth--dark">
+          <h3>Release gate remains closed</h3>
+          <ul>
+            <li>The hash is an engineering integrity control, not a qualified or legally recognized digital signature.</li>
+            <li>Clinical quality, usability, accessibility and representative site evaluation still require named-owner approval.</li>
+            <li>Production identity, keys, service roles, TLS, retention, backup/restore and incident drills are not evidenced.</li>
+            <li>The mock is deterministic workflow scaffolding; it is not diagnostic reasoning or clinical validation.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="patient">
+      <div class="section-head">
+        <div><span class="kicker">08 · Patient completion ledger</span><h2>Self-service without skipping clinical review.</h2></div>
+        <p class="section-intro">The patient app now uses durable consent, intake, upload and signed-report services. Local identity and speech remain explicitly synthetic.</p>
+      </div>
+      <div class="truth-grid">
+        <article class="truth">
+          <h3>Engineering candidate</h3>
+          <ul>
+            <li>One production patient runtime with bilingual, touch-first routes and accessible loading, empty, error and emergency states.</li>
+            <li>Token-derived <code>/me</code> scoping for consent, confirmed intake, uploads, reviewed timeline and clinician-signed reports.</li>
+            <li>Patient uploads reuse quarantine, ClamAV, normalization, real PP-OCRv5-mobile, extraction and clinician-review state rather than creating a parallel pipeline.</li>
+            <li>Confirmed voice or typed answers feed adaptive SOCRATES questions; editable accept/reject decisions are durably stored.</li>
+            <li>Deterministic mock TTS returns local WAV cues with no model, hosted API, credential or network dependency.</li>
+          </ul>
+        </article>
+        <article class="truth truth--dark">
+          <h3>Release gate remains closed</h3>
+          <ul>
+            <li>Development patient identity uses synthetic UUIDs and a demo-only token route, not production Clerk/SSO verification.</li>
+            <li>Mock TTS is an acknowledgement tone, not intelligible bilingual clinical speech.</li>
+            <li>Real PP-OCRv5-mobile passes a clear printed-prescription recognition check, but representative prescriptions, cameras and handwriting remain clinically unevaluated.</li>
+            <li>Patient reports expose signed summaries only; the SHA-256 signature is an engineering integrity control, not a legal signature claim.</li>
+            <li>Clinical safety, privacy/security, accessibility, facility operations and production recovery approvals remain pending.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="phase9">
+      <div class="section-head">
+        <div><span class="kicker">09 · Phase 9 ledger</span><h2>Search reviewed evidence, not model residue.</h2></div>
+        <p class="section-intro">The implemented slice is lexical retrieval and longitudinal context over canonical, human-reviewed sources. It is not RAG, diagnosis or production approval.</p>
+      </div>
+      <div class="truth-grid">
+        <article class="truth">
+          <h3>Engineering candidate</h3>
+          <ul>
+            <li>Only signed summaries and active reviewed facts enter a strict, rebuildable Elasticsearch projection; raw OCR and unsigned drafts are excluded.</li>
+            <li>Doctor/nurse search requires patient and treatment purpose; the patient timeline derives self-scope from the token.</li>
+            <li>Forced-RLS access audit stores scope, outcome, latency and a query hash—never raw query or returned narrative.</li>
+            <li>Kafka synchronization re-reads PostgreSQL and commits only after indexing; tenant repair reconciles opaque IDs and counts.</li>
+            <li>A disposable 250-record benchmark passed four English/Hindi golden queries and its cross-tenant control.</li>
+          </ul>
+        </article>
+        <article class="truth truth--dark">
+          <h3>Release gate remains closed</h3>
+          <ul>
+            <li>Production Clerk/SSO identity, care relationships and managed Elasticsearch security are not yet approved.</li>
+            <li>The synthetic benchmark is not representative clinical relevance, projected-scale load or a production SLO.</li>
+            <li>Vector retrieval and retrieval-assisted generation are not implemented or authorized.</li>
+            <li>Whole-index recovery, rollback, Kafka replay, backup/restore and outage drills remain staging gates.</li>
+            <li>Clinical safety, privacy/security, accessibility and facility owners must approve before patient use.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section reveal" id="boundary">
+      <div class="section-head">
+        <div><span class="kicker">10 · Production boundary</span><h2>The next proof is operational and clinical.</h2></div>
+        <p class="section-intro">Phases 7–9 plus the patient completion slice have working engineering paths. They still need identity hardening, representative evaluation, owner review and staged recovery evidence. RAG is not required.</p>
+      </div>
+      <div class="boundary">
+        <aside class="boundary-callout"><div class="huge">No RAG<br>for V1.</div><p>Phase 9 adds access-filtered lexical retrieval over reviewed records. It does not feed a generator. Semantic/vector retrieval requires a separate measured use case, evaluation set and safety decision.</p></aside>
+        <div class="next-list">
+          <div class="next"><div><strong>Clerk verification + internal identity</strong><span>JWT/JWKS validation, subject mapping, facility membership, caregiver relationships, signed webhooks, MFA and SSO policy.</span></div></div>
+          <div class="next"><div><strong>Production data-service controls</strong><span>Separate worker/API roles, TLS, managed secrets, encryption policy, retention/legal hold, backup restoration and negative tenant-isolation evidence.</span></div></div>
+          <div class="next"><div><strong>Authorization at every boundary</strong><span>Tenant and facility scoping, purpose-of-use, patient/caregiver access, break-glass approval and negative integration tests.</span></div></div>
+          <div class="next"><div><strong>Durable triage ownership and escalation</strong><span>Authenticated acknowledge, handoff, resolve and governed override commands; facility-owned timers; reference-only events; broker/provider failure recovery.</span></div></div>
+          <div class="next"><div><strong>Representative document evaluation</strong><span>Governed prescription fixtures across sites, scripts and capture quality; thresholds approved before evaluation; handwriting and lab tables remain separate gates.</span></div></div>
+          <div class="next"><div><strong>Operational proof</strong><span>Accessibility/usability sessions, threat model, load profile, Kafka/object/Mongo/Postgres outage drills, backup/restore and staged rollback.</span></div></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div><div class="signoff">Phase 9 reviewed-record search built.<br>Controlled rollout remains gated.</div><small>Evidence snapshot · codex/phase-9-search-retrieval · 6 September 2026 · Asia/Kolkata</small></div>
+      <small>Source reviewed: <a href="https://opncd.ai/share/egsk269W">OpenCode shared session</a><br>Canonical decisions: <a href="../docs/architecture/decisions/">docs/architecture/decisions</a></small>
+    </div>
+  </footer>
+
+  <script>
+    const filters = document.querySelectorAll('.filter');
+    const findings = document.querySelectorAll('.finding');
+    filters.forEach((button) => button.addEventListener('click', () => {
+      filters.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+      const filter = button.dataset.filter;
+      findings.forEach((card) => { card.hidden = filter !== 'all' && card.dataset.severity !== filter; });
+    }));
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion || !('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach((item) => item.classList.add('in'));
+    } else {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) { entry.target.classList.add('in'); observer.unobserve(entry.target); }
+        });
+      }, { threshold: .08 });
+      document.querySelectorAll('.reveal').forEach((item) => observer.observe(item));
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+{
+  "schema_version": "Phase7ExtractionCandidateReport.v1",
+  "generated_at": "2026-09-04",
+  "source_revision": "303ca11",
+  "harness": "apps/api/tools/evaluate_phase7_extraction.py",
+  "manifest": "tests/model-evaluations/phase7/manifest.jsonl",
+  "manifest_fixture_count": 7,
+  "document_class": "prescription",
+  "results": {
+    "candidate_exact_match": 1.0,
+    "source_link_rate": 1.0,
+    "warning_exact_match": 1.0
+  },
+  "covered_strata": {
+    "languages": ["en", "hi"],
+    "scripts": ["Latin", "Devanagari"],
+    "capture_labels": ["synthetic_scan", "synthetic_mobile"],
+    "quality_labels": ["clean", "degraded", "glare"]
+  },
+  "release_thresholds": {
+    "status": "pending_owner_approval",
+    "candidate_exact_match": null,
+    "source_link_rate": null,
+    "warning_exact_match": null
+  },
+  "limitations": [
+    "All inputs are original synthetic OCR regions; no patient data was used.",
+    "Capture and quality fields are labels, not measurements from physical scans or cameras.",
+    "The report does not measure OCR recognition, handwriting, lab tables, latency, clinical outcomes, or material-error escape rate.",
+    "A perfect score on seven fixtures is parser regression evidence only and is not a release claim.",
+    "Clinical-safety, privacy/security, accessibility, facility-operations, and engineering approvals remain pending."
+  ]
+}

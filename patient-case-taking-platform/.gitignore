@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.egg
+
+# Node
+node_modules/
+.next/
+out/
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Docker
+docker-compose.override.yml
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+apps/api/benchmarks/**/*.wav
+apps/api/benchmarks/**/first-rows.json
+apps/api/tests/test_audio.wav
+apps/api/tests/test_ocr_image.png
+.artifacts/
+
+# Build
+*.tsbuildinfo
+.npm-cache/
+*.tar.gz
+*.zip

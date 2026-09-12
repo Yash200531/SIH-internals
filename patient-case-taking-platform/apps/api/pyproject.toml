@@ -1,0 +1,113 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notmid-clinical-api"
+version = "0.1.0"
+description = "MediKiosk Clinical Platform API"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.30.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "python-dotenv>=1.0",
+    "httpx>=0.27.0",
+    "PyJWT[crypto]==2.13.0",
+    "python-multipart>=0.0.9",
+    "asyncpg>=0.29.0",
+    "motor>=3.5.0",
+    "redis>=5.0",
+    "aiokafka>=0.11",
+    "elasticsearch[async]==9.3.0",
+    "boto3>=1.35",
+    "Pillow==12.3.0",
+    "pypdfium2==5.13.0",
+]
+
+[project.optional-dependencies]
+dev = ["mypy", "pytest", "pytest-asyncio", "ruff"]
+ai-asr = [
+    "numpy>=1.26,<2",
+    "soundfile>=0.12",
+    "torch>=2.2",
+    "torchaudio>=2.2",
+    "transformers>=4.48",
+    "onnx==1.20.1",
+    # 1.27+ wheels target CUDA 13; the deployment image and PyTorch use CUDA 12.
+    "onnxruntime-gpu>=1.21,<1.27",
+]
+ai-ocr-fast = [
+    "paddlepaddle==3.1.1",
+    "paddleocr>=3.7,<3.8",
+    "torch>=2.2",
+]
+ai-ocr-vl = [
+    "paddlepaddle==3.1.1",
+    "paddleocr[doc-parser]>=3.7,<3.8",
+    "torch>=2.2",
+]
+voice-platform = [
+    "aiokafka>=0.11",
+    "boto3>=1.35",
+    "cryptography>=43",
+]
+# Real LLM providers
+ai-llm-medgemma = [
+    # llama-cpp-python with CUDA 12.4 support — install with:
+    #   pip install llama-cpp-python --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu124
+    # Listed here as CPU fallback; GPU variant must be installed manually.
+    "llama-cpp-python>=0.3.4",
+]
+ai-llm-anthropic = [
+    "anthropic==0.40.0",
+]
+# Real TTS provider (AI4Bharat Indic Parler-TTS)
+# Model is gated — accept terms at https://huggingface.co/ai4bharat/indic-parler-tts
+ai-tts = [
+    "parler-tts>=1.0",
+    "transformers>=4.48",
+    "torch>=2.2",
+    "numpy>=1.26",
+]
+# AI4Bharat IndicF5 TTS. The upstream package must come from AI4Bharat's
+# repository; the unrelated PyPI f5-tts package does not expose IndicF5's
+# Transformers custom-model contract. Keep the model's compatibility bounds.
+ai-tts-f5 = [
+    "f5-tts @ git+https://github.com/AI4Bharat/IndicF5.git@13f7c4d627cc10111aea8fe9c0039462cacacdc7",
+    "huggingface-hub>=0.28,<1",
+    "transformers>=4.48,<4.50",
+    "torch>=2.6",
+    "torchaudio>=2.6",
+    "numpy>=1.26,<2",
+    "soundfile>=0.12",
+]
+# ASR benchmark / evaluation
+eval = [
+    "jiwer>=3.0",           # WER / CER computation
+    "soundfile>=0.12",
+    "pandas>=2.0",
+    "tqdm>=4.66",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+exclude = ["migrations*", "tests*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+markers = [
+    "integration: requires model artifacts, network access, or a running subprocess",
+]
+
+[tool.mypy]
+ignore_missing_imports = true

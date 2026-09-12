@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --midnight: #0a0e1a;
+  --midnight-light: #111827;
+  --midnight-border: #1e293b;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --surface: #1e293b;
+}
+
+body {
+  background-color: var(--midnight);
+  color: #e2e8f0;
+}

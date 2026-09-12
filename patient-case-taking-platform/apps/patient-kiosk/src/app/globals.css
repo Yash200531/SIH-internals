@@ -1,0 +1,120 @@
+@import "../../../../packages/ui-system/styles/medikiosk.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { --touch-target-min: 56px; }
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body { min-height: 100dvh; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.a11y-large-text {
+  font-size: 1.5em !important;
+}
+
+.a11y-large-text h1 { font-size: 2.5em !important; }
+.a11y-large-text h2 { font-size: 2em !important; }
+.a11y-large-text p, .a11y-large-text span, .a11y-large-text label {
+  font-size: 1.25em !important;
+}
+
+.a11y-high-contrast {
+  background: var(--mk-ink-900) !important;
+  color: var(--mk-white) !important;
+}
+
+.a11y-high-contrast a { color: var(--mk-marigold-100) !important; }
+.a11y-high-contrast button { border: 2px solid var(--mk-white) !important; }
+
+button, a, input, select, textarea {
+  min-height: var(--touch-target-min);
+}
+
+.kiosk-card {
+  @apply rounded-3xl border-4 border-gray-200 bg-white p-6 shadow-sm transition-all;
+}
+
+.kiosk-card:active {
+  @apply scale-[0.98] shadow-md;
+}
+
+.kiosk-scroll {
+  scroll-snap-type: y mandatory;
+  overflow-y: auto;
+  height: 100dvh;
+}
+
+.kiosk-scroll > * {
+  scroll-snap-align: start;
+  min-height: 100dvh;
+}
+
+.patient-shell {
+  background:
+    radial-gradient(circle at 12% 18%, var(--mk-marigold-100), transparent 25rem),
+    radial-gradient(circle at 88% 85%, var(--mk-success-soft), transparent 28rem),
+    var(--mk-canvas);
+  min-height: 100dvh;
+  overflow: hidden;
+  padding: 1.25rem;
+  position: relative;
+}
+
+.patient-shell::before {
+  border: 1px solid var(--mk-border);
+  border-bottom: 0;
+  border-radius: 18rem 18rem 0 0;
+  content: "";
+  height: 31rem;
+  left: 50%;
+  opacity: 0.55;
+  position: absolute;
+  top: 7rem;
+  transform: translateX(-50%);
+  width: min(82vw, 48rem);
+}
+
+.patient-header { align-items: center; display: flex; justify-content: space-between; margin: 0 auto; max-width: 78rem; position: relative; z-index: 2; }
+.patient-trust { color: var(--mk-ink-muted); font-size: 0.82rem; margin-right: 4.75rem; }
+.patient-main { display: grid; gap: 2rem; grid-template-columns: minmax(0, 1.05fr) minmax(20rem, .75fr); margin: 5rem auto 0; max-width: 68rem; position: relative; z-index: 1; }
+.patient-copy { padding: 2rem 0; }
+.patient-title { font-size: clamp(3rem, 7vw, 6.25rem); margin: 0.7rem 0 1.2rem; max-width: 12ch; }
+.patient-title span { color: var(--mk-success); display: block; }
+.patient-lede { color: var(--mk-ink-muted); font-size: clamp(1.05rem, 2vw, 1.3rem); line-height: 1.65; max-width: 34rem; }
+.patient-language { display: flex; gap: .6rem; margin-top: 2rem; }
+.language-chip { background: transparent; border: 1px solid var(--mk-border); border-radius: 999px; color: var(--mk-ink-muted); cursor: pointer; min-height: 48px; padding: .65rem 1.15rem; }
+.language-chip[aria-pressed="true"] { background: var(--mk-brand); border-color: var(--mk-brand); color: var(--mk-white); }
+.patient-card { align-self: center; padding: clamp(1.5rem, 4vw, 2.5rem); text-align: center; }
+.voice-orb { align-items: center; background: var(--mk-brand-strong); border: .7rem solid var(--mk-paper-100); border-radius: 50%; color: var(--mk-white); cursor: pointer; display: flex; font-size: 2rem; height: 8.5rem; justify-content: center; margin: 1.5rem auto; position: relative; width: 8.5rem; }
+.voice-orb[data-listening="true"]::after { animation: voice-ring 1.5s infinite; border: 2px solid var(--mk-success); border-radius: inherit; content: ""; inset: -.8rem; position: absolute; }
+@keyframes voice-ring { 0% { opacity: .8; transform: scale(.9); } 100% { opacity: 0; transform: scale(1.18); } }
+.voice-title { font-family: var(--mk-font-display); font-size: 1.6rem; margin: 0; }
+.voice-help { color: var(--mk-ink-muted); line-height: 1.5; margin: .5rem auto 1.4rem; max-width: 25rem; }
+.patient-actions { display: grid; gap: .75rem; }
+.patient-note { align-items: center; color: var(--mk-ink-muted); display: flex; font-size: .82rem; gap: .5rem; justify-content: center; margin-top: 1.2rem; }
+
+@media (max-width: 760px) {
+  .patient-shell { padding: 1rem; }
+  .patient-main { grid-template-columns: 1fr; margin-top: 2.5rem; }
+  .patient-copy { padding: 0; text-align: center; }
+  .patient-title, .patient-lede { margin-left: auto; margin-right: auto; }
+  .patient-language { justify-content: center; }
+  .patient-trust { display: none; }
+}

@@ -1,0 +1,26 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PADDLE_PDX_MODEL_SOURCE=BOS \
+    PADDLE_HOME=/home/appuser/.paddle
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y fonts-dejavu-core libgl1 libglib2.0-0 libgomp1 \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt requirements-ocr.txt ./
+RUN pip install --no-cache-dir -r requirements-ocr.txt
+
+COPY app ./app
+COPY migrations ./migrations
+COPY tools ./tools
+
+RUN useradd --create-home --uid 10001 appuser \
+    && mkdir -p /home/appuser/.paddlex /home/appuser/.paddle \
+    && chown -R appuser:appuser /home/appuser/.paddlex /home/appuser/.paddle
+USER appuser
+
+CMD ["python", "-m", "app.documents.ocr_worker", "forever"]

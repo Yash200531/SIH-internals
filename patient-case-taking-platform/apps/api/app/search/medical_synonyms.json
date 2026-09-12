@@ -1,0 +1,22 @@
+{
+  "version": "phase9-engineering-v1",
+  "status": "requires_clinical_language_review_before_pilot",
+  "entries": [
+    {
+      "id": "myocardial-infarction",
+      "terms": ["myocardial infarction", "heart attack", "mi", "दिल का दौरा"]
+    },
+    {
+      "id": "hypertension",
+      "terms": ["hypertension", "high blood pressure", "उच्च रक्तचाप"]
+    },
+    {
+      "id": "diabetes-mellitus",
+      "terms": ["diabetes mellitus", "diabetes", "मधुमेह"]
+    },
+    {
+      "id": "shortness-of-breath",
+      "terms": ["shortness of breath", "breathlessness", "सांस फूलना"]
+    }
+  ]
+}

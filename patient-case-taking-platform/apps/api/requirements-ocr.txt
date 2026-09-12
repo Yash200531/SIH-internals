@@ -1,0 +1,6 @@
+-r requirements.txt
+
+# Real CPU OCR runtime used by the dedicated document OCR worker.
+# PaddleOCR is the pipeline API; PaddlePaddle is its required inference engine.
+paddlepaddle==3.1.1
+paddleocr==3.7.0

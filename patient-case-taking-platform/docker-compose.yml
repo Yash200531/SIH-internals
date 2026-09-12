@@ -1,0 +1,518 @@
+# Local development topology only. Production requires managed secrets,
+# authenticated data services, TLS, backups, and an orchestrator deployment.
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: notmid
+      POSTGRES_USER: notmid
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-notmid-local-only}
+    ports: ["127.0.0.1:5432:5432"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U notmid"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  mongodb:
+    image: mongo:7
+    ports: ["127.0.0.1:27017:27017"]
+    volumes: ["mongodata:/data/db"]
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports: ["127.0.0.1:6379:6379"]
+    volumes: ["redisdata:/data"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  kafka:
+    image: confluentinc/cp-kafka:7.6.0
+    ports: ["127.0.0.1:9092:9092"]
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: "broker,controller"
+      KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka:29093"
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092,CONTROLLER://:29093"
+      KAFKA_ADVERTISED_LISTENERS: "INTERNAL://kafka:29092,EXTERNAL://localhost:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT"
+      KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+      KAFKA_INTER_BROKER_LISTENER_NAME: "INTERNAL"
+      KAFKA_LOG_DIRS: "/tmp/kraft-logs"
+      CLUSTER_ID: "MkU3OEVBNTcwNTJENDM2Qk"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_DEFAULT_REPLICATION_FACTOR: "1"
+      KAFKA_MIN_INSYNC_REPLICAS: "1"
+    volumes: ["kafka-data:/var/lib/kafka/data"]
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.3.0
+    ports: ["127.0.0.1:9200:9200"]
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      ES_JAVA_OPTS: -Xms512m -Xmx512m
+    volumes: ["elasticsearchdata:/usr/share/elasticsearch/data"]
+    mem_limit: 1g
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail --silent http://localhost:9200/_cluster/health?wait_for_status=yellow || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    ports:
+      - "127.0.0.1:9000:9000"
+      - "127.0.0.1:${MINIO_CONSOLE_PORT:-9002}:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-notmid-local}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-notmid-local-only-change-me}
+    volumes: ["miniodata:/data"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  minio-init:
+    image: minio/minio:latest
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >-
+        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" &&
+        mc mb --ignore-existing local/notmid-clinical &&
+        mc anonymous set none local/notmid-clinical
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-notmid-local}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-notmid-local-only-change-me}
+    depends_on:
+      minio: { condition: service_healthy }
+
+  clamav:
+    image: clamav/clamav:1.4.6-debian13-slim
+    ports: ["127.0.0.1:3310:3310"]
+    volumes: ["clamavdata:/var/lib/clamav"]
+    healthcheck:
+      test: ["CMD", "clamdscan", "--ping", "5"]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+      start_period: 60s
+
+  api-migrate:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.migrations", "up"]
+    environment:
+      DATABASE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  document-upload-cleanup:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.documents.cleanup", "forever"]
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      DOCUMENT_UPLOAD_CLEANUP_INTERVAL_SECONDS: ${DOCUMENT_UPLOAD_CLEANUP_INTERVAL_SECONDS:-60}
+      DOCUMENT_UPLOAD_CLEANUP_BATCH_SIZE: ${DOCUMENT_UPLOAD_CLEANUP_BATCH_SIZE:-100}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+
+  document-scanner:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.documents.scan_worker", "forever"]
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: notmid-clinical
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-notmid-local}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-notmid-local-only-change-me}
+      S3_SERVER_SIDE_ENCRYPTION: ${S3_SERVER_SIDE_ENCRYPTION:-}
+      CLAMAV_HOST: clamav
+      CLAMAV_PORT: 3310
+      CLAMAV_TIMEOUT_SECONDS: ${CLAMAV_TIMEOUT_SECONDS:-30}
+      DOCUMENT_SCAN_MAX_BYTES: ${DOCUMENT_SCAN_MAX_BYTES:-10485760}
+      DOCUMENT_SCAN_BATCH_SIZE: ${DOCUMENT_SCAN_BATCH_SIZE:-10}
+      DOCUMENT_SCAN_POLL_INTERVAL_SECONDS: ${DOCUMENT_SCAN_POLL_INTERVAL_SECONDS:-2}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      minio-init: { condition: service_completed_successfully }
+      clamav: { condition: service_healthy }
+
+  document-normalizer:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.documents.normalization_worker", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid
+    mem_limit: 768m
+    cpus: 1.0
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: notmid-clinical
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-notmid-local}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-notmid-local-only-change-me}
+      S3_SERVER_SIDE_ENCRYPTION: ${S3_SERVER_SIDE_ENCRYPTION:-}
+      DOCUMENT_NORMALIZATION_MAX_PAGES: ${DOCUMENT_NORMALIZATION_MAX_PAGES:-20}
+      DOCUMENT_NORMALIZATION_MAX_PIXELS_PER_PAGE: ${DOCUMENT_NORMALIZATION_MAX_PIXELS_PER_PAGE:-25000000}
+      DOCUMENT_NORMALIZATION_MAX_TOTAL_PIXELS: ${DOCUMENT_NORMALIZATION_MAX_TOTAL_PIXELS:-100000000}
+      DOCUMENT_NORMALIZATION_RENDER_DPI: ${DOCUMENT_NORMALIZATION_RENDER_DPI:-200}
+      DOCUMENT_NORMALIZATION_TIMEOUT_SECONDS: ${DOCUMENT_NORMALIZATION_TIMEOUT_SECONDS:-30}
+      DOCUMENT_NORMALIZATION_BATCH_SIZE: ${DOCUMENT_NORMALIZATION_BATCH_SIZE:-2}
+      DOCUMENT_NORMALIZATION_POLL_INTERVAL_SECONDS: ${DOCUMENT_NORMALIZATION_POLL_INTERVAL_SECONDS:-2}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      minio-init: { condition: service_completed_successfully }
+      document-scanner: { condition: service_started }
+
+  document-ocr-worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile.ocr
+    command: ["python", "-m", "app.documents.ocr_worker", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,noexec,nosuid
+    mem_limit: 2g
+    cpus: 2.0
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      APP_ENV: development
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      MONGODB_URL: mongodb://mongodb:27017
+      S3_ENDPOINT: http://minio:9000
+      S3_BUCKET: notmid-clinical
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-notmid-local}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-notmid-local-only-change-me}
+      OCR_PROVIDER: ${OCR_PROVIDER:-paddleocr_fast}
+      OCR_LANGUAGE: ${OCR_LANGUAGE:-en}
+      OCR_ALLOW_COMPLEX_LAYOUT_PROVIDER: ${OCR_ALLOW_COMPLEX_LAYOUT_PROVIDER:-false}
+      DOCUMENT_OCR_TIMEOUT_SECONDS: ${DOCUMENT_OCR_TIMEOUT_SECONDS:-60}
+      DOCUMENT_OCR_MAX_PAGE_BYTES: ${DOCUMENT_OCR_MAX_PAGE_BYTES:-52428800}
+      DOCUMENT_OCR_LEASE_SECONDS: ${DOCUMENT_OCR_LEASE_SECONDS:-120}
+      DOCUMENT_OCR_MAX_ATTEMPTS: ${DOCUMENT_OCR_MAX_ATTEMPTS:-3}
+      DOCUMENT_OCR_BATCH_SIZE: ${DOCUMENT_OCR_BATCH_SIZE:-2}
+      DOCUMENT_OCR_POLL_INTERVAL_SECONDS: ${DOCUMENT_OCR_POLL_INTERVAL_SECONDS:-2}
+      DOCUMENT_OCR_AUTOMATION_ENABLED: ${DOCUMENT_OCR_AUTOMATION_ENABLED:-true}
+      PADDLE_PDX_MODEL_SOURCE: ${PADDLE_PDX_MODEL_SOURCE:-BOS}
+    volumes:
+      - ocr-model-cache:/home/appuser/.paddlex
+      - paddle-cache:/home/appuser/.paddle
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      mongodb: { condition: service_healthy }
+      minio-init: { condition: service_completed_successfully }
+      document-normalizer: { condition: service_started }
+
+  document-extraction-worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.documents.extraction_worker", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    mem_limit: 512m
+    cpus: 1.0
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      MONGODB_URL: mongodb://mongodb:27017
+      OCR_ARTIFACT_DATABASE: ${OCR_ARTIFACT_DATABASE:-notmid}
+      OCR_ARTIFACT_COLLECTION: ${OCR_ARTIFACT_COLLECTION:-document_ocr_artifacts}
+      EXTRACTION_DRAFT_COLLECTION: ${EXTRACTION_DRAFT_COLLECTION:-document_extraction_drafts}
+      DOCUMENT_EXTRACTION_LEASE_SECONDS: ${DOCUMENT_EXTRACTION_LEASE_SECONDS:-60}
+      DOCUMENT_EXTRACTION_MAX_ATTEMPTS: ${DOCUMENT_EXTRACTION_MAX_ATTEMPTS:-3}
+      DOCUMENT_EXTRACTION_BATCH_SIZE: ${DOCUMENT_EXTRACTION_BATCH_SIZE:-2}
+      DOCUMENT_EXTRACTION_POLL_INTERVAL_SECONDS: ${DOCUMENT_EXTRACTION_POLL_INTERVAL_SECONDS:-2}
+      DOCUMENT_EXTRACTION_AUTOMATION_ENABLED: ${DOCUMENT_EXTRACTION_AUTOMATION_ENABLED:-true}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      mongodb: { condition: service_healthy }
+      document-ocr-worker: { condition: service_started }
+
+  document-promotion-worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.documents.promotion_worker", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    mem_limit: 256m
+    cpus: 0.5
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      DOCUMENT_PROMOTION_BATCH_SIZE: ${DOCUMENT_PROMOTION_BATCH_SIZE:-10}
+      DOCUMENT_PROMOTION_POLL_INTERVAL_SECONDS: ${DOCUMENT_PROMOTION_POLL_INTERVAL_SECONDS:-2}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+
+  document-outbox-publisher:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.documents.outbox_publisher", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    mem_limit: 256m
+    cpus: 0.5
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      KAFKA_BROKERS: kafka:29092
+      DOCUMENT_EVENT_TOPIC: ${DOCUMENT_EVENT_TOPIC:-clinical.documents.v1}
+      DOCUMENT_OUTBOX_LEASE_SECONDS: ${DOCUMENT_OUTBOX_LEASE_SECONDS:-30}
+      DOCUMENT_OUTBOX_MAX_ATTEMPTS: ${DOCUMENT_OUTBOX_MAX_ATTEMPTS:-3}
+      DOCUMENT_OUTBOX_BATCH_SIZE: ${DOCUMENT_OUTBOX_BATCH_SIZE:-25}
+      DOCUMENT_OUTBOX_POLL_INTERVAL_SECONDS: ${DOCUMENT_OUTBOX_POLL_INTERVAL_SECONDS:-1}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_started }
+
+  triage-outbox-publisher:
+    profiles: ["triage"]
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.rules.alert_outbox", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    mem_limit: 256m
+    cpus: 0.5
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      KAFKA_BROKERS: kafka:29092
+      TRIAGE_EVENT_TOPIC: ${TRIAGE_EVENT_TOPIC:-clinical.triage.v1}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_started }
+
+  triage-timer-worker:
+    profiles: ["triage-timers"]
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.rules.alert_timers", "forever", "--policy", "/policy/facility.json"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    mem_limit: 256m
+    cpus: 0.5
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    volumes:
+      - ${TRIAGE_TIMER_POLICY_FILE:-./services/alert-worker/policy.example.json}:/policy/facility.json:ro
+    environment:
+      DATABASE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      TRIAGE_WORKFLOW_ENABLED: ${TRIAGE_WORKFLOW_ENABLED:-false}
+      ENABLE_DEMO_ROUTES: ${ENABLE_DEMO_ROUTES:-false}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+
+  summary-outbox-publisher:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.summary_workflow.outbox_publisher", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    mem_limit: 256m
+    cpus: 0.5
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      KAFKA_BROKERS: kafka:29092
+      SUMMARY_EVENT_TOPIC: ${SUMMARY_EVENT_TOPIC:-clinical.summaries.v1}
+      SUMMARY_OUTBOX_LEASE_SECONDS: ${SUMMARY_OUTBOX_LEASE_SECONDS:-30}
+      SUMMARY_OUTBOX_MAX_ATTEMPTS: ${SUMMARY_OUTBOX_MAX_ATTEMPTS:-3}
+      SUMMARY_OUTBOX_BATCH_SIZE: ${SUMMARY_OUTBOX_BATCH_SIZE:-25}
+      SUMMARY_OUTBOX_POLL_INTERVAL_SECONDS: ${SUMMARY_OUTBOX_POLL_INTERVAL_SECONDS:-1}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_started }
+
+  search-index-worker:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    command: ["python", "-m", "app.search.worker", "forever"]
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    mem_limit: 384m
+    cpus: 0.75
+    cap_drop: ["ALL"]
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+    environment:
+      APP_ENV: development
+      DATABASE_MAINTENANCE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      KAFKA_BROKERS: kafka:29092
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      CLINICAL_SEARCH_INDEX_ALIAS: ${CLINICAL_SEARCH_INDEX_ALIAS:-medikiosk-clinical-search}
+      CLINICAL_SEARCH_ENABLED: ${CLINICAL_SEARCH_ENABLED:-true}
+      SEARCH_CONSUMER_GROUP: ${SEARCH_CONSUMER_GROUP:-medikiosk-clinical-search-v1}
+      SUMMARY_EVENT_TOPIC: ${SUMMARY_EVENT_TOPIC:-clinical.summaries.v1}
+      DOCUMENT_EVENT_TOPIC: ${DOCUMENT_EVENT_TOPIC:-clinical.documents.v1}
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      postgres: { condition: service_healthy }
+      kafka: { condition: service_started }
+      elasticsearch: { condition: service_healthy }
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: ${API_BUILD_TARGET:-runtime}
+    ports: ["8000:8000"]
+    environment:
+      APP_ENV: development
+      DATABASE_URL: postgresql://notmid:${POSTGRES_PASSWORD:-notmid-local-only}@postgres:5432/notmid
+      MONGODB_URL: mongodb://mongodb:27017
+      REDIS_URL: redis://redis:6379
+      KAFKA_BROKERS: kafka:29092
+      ELASTICSEARCH_URL: http://elasticsearch:9200
+      CLINICAL_SEARCH_INDEX_ALIAS: ${CLINICAL_SEARCH_INDEX_ALIAS:-medikiosk-clinical-search}
+      CLINICAL_SEARCH_ENABLED: ${CLINICAL_SEARCH_ENABLED:-true}
+      S3_ENDPOINT: http://minio:9000
+      S3_PUBLIC_ENDPOINT: http://127.0.0.1:9000
+      S3_BUCKET: notmid-clinical
+      S3_ACCESS_KEY: ${MINIO_ROOT_USER:-notmid-local}
+      S3_SECRET_KEY: ${MINIO_ROOT_PASSWORD:-notmid-local-only-change-me}
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:3001,http://localhost:3002
+      AUTH_PROVIDER: ${AUTH_PROVIDER:-demo}
+      CLERK_APPLICATIONS_JSON: ${CLERK_APPLICATIONS_JSON:-[]}
+      ENABLE_DEMO_ROUTES: ${ENABLE_DEMO_ROUTES:-false}
+      TRIAGE_WORKFLOW_ENABLED: ${TRIAGE_WORKFLOW_ENABLED:-false}
+      DOCUMENT_WORKFLOW_ENABLED: ${DOCUMENT_WORKFLOW_ENABLED:-false}
+      S3_SERVER_SIDE_ENCRYPTION: ${S3_SERVER_SIDE_ENCRYPTION:-}
+      # A 6 GB GPU can host one local model at a time. For IndicF5 use
+      # API_BUILD_TARGET=tts, TTS_PROVIDER=indicf5 and leave ASR/LLM as mock.
+      LLM_PROVIDER: ${LLM_PROVIDER:-mock}
+      TTS_PROVIDER: ${TTS_PROVIDER:-mock}
+      TTS_WARMUP_ON_START: ${TTS_WARMUP_ON_START:-false}
+      TTS_SYNTHESIS_TIMEOUT_SECONDS: ${TTS_SYNTHESIS_TIMEOUT_SECONDS:-180}
+      INDICF5_MODEL: ${INDICF5_MODEL:-ai4bharat/IndicF5}
+      INDICF5_MODEL_REVISION: ${INDICF5_MODEL_REVISION:-ba85abedf18dc479a447eaa0eccbd76ab78a47d5}
+      INDICF5_DEVICE: ${INDICF5_DEVICE:-}
+      INDICF5_REFERENCE_AUDIO_PATH: ${INDICF5_REFERENCE_AUDIO_PATH:-}
+      INDICF5_LOCAL_FILES_ONLY: ${INDICF5_LOCAL_FILES_ONLY:-false}
+      INDICF5_DISABLE_COMPILE: ${INDICF5_DISABLE_COMPILE:-true}
+      INDICF5_NFE_STEPS: ${INDICF5_NFE_STEPS:-16}
+      INDICF5_CACHE_ENTRIES: ${INDICF5_CACHE_ENTRIES:-32}
+      SUMMARY_WORKFLOW_ENABLED: ${SUMMARY_WORKFLOW_ENABLED:-false}
+      ASR_PROVIDER: ${ASR_PROVIDER:-mock}
+      OMP_NUM_THREADS: ${ASR_CPU_THREADS:-4}
+      MKL_NUM_THREADS: ${ASR_CPU_THREADS:-4}
+      ASR_MODEL_REVISION: ${ASR_MODEL_REVISION:-e9b71b369c048e2c6b634d4c131061c34e441179}
+      ASR_DECODING: ${ASR_DECODING:-ctc}
+      ASR_ENGLISH_PROVIDER: ${ASR_ENGLISH_PROVIDER:-whisper}
+      ASR_ENGLISH_MODEL: ${ASR_ENGLISH_MODEL:-openai/whisper-small.en}
+      HUGGINGFACE_TOKEN: ${HUGGINGFACE_TOKEN:-}
+      MODEL_WARMUP_ON_START: ${MODEL_WARMUP_ON_START:-false}
+      ASR_WARMUP_ON_START: ${ASR_WARMUP_ON_START:-false}
+      VOICE_REDIS_ENABLED: ${VOICE_REDIS_ENABLED:-false}
+      VOICE_KAFKA_ENABLED: ${VOICE_KAFKA_ENABLED:-false}
+      VOICE_CONTEXT_TTL_SECONDS: ${VOICE_CONTEXT_TTL_SECONDS:-1800}
+    volumes:
+      - asr-model-cache:/home/appuser/.cache/huggingface
+    depends_on:
+      api-migrate: { condition: service_completed_successfully }
+      mongodb: { condition: service_healthy }
+      redis: { condition: service_healthy }
+      kafka: { condition: service_started }
+      elasticsearch: { condition: service_healthy }
+      minio-init: { condition: service_completed_successfully }
+
+  patient-kiosk:
+    build:
+      context: .
+      dockerfile: apps/patient-kiosk/Dockerfile
+    ports: ["3000:3000"]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+
+  clinician-console:
+    build:
+      context: .
+      dockerfile: apps/clinician-console/Dockerfile
+      args:
+        NEXT_PUBLIC_AUTH_PROVIDER: ${CLINICIAN_AUTH_PROVIDER:-demo}
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${CLINICIAN_CLERK_PUBLISHABLE_KEY:-}
+        NEXT_PUBLIC_API_URL: ${CLINICIAN_API_URL:-http://localhost:8000}
+    ports: ["3001:3000"]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      CLERK_SECRET_KEY: ${CLINICIAN_CLERK_SECRET_KEY:-}
+      CLERK_AUDIENCE: ${CLINICIAN_CLERK_AUDIENCE:-clinician-app}
+      CLERK_AUTHORIZED_PARTIES: ${CLINICIAN_CLERK_AUTHORIZED_PARTIES:-http://localhost:3001}
+
+  admin-console:
+    build:
+      context: ./apps/admin-console
+      dockerfile: Dockerfile
+    ports: ["3002:3000"]
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+
+volumes:
+  pgdata:
+  mongodata:
+  redisdata:
+  miniodata:
+  clamavdata:
+  kafka-data:
+  elasticsearchdata:
+  ocr-model-cache:
+  paddle-cache:
+  asr-model-cache:

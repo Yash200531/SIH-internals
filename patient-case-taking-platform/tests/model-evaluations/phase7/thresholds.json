@@ -1,0 +1,15 @@
+{
+  "status": "pending_owner_approval",
+  "version": "candidate-v1",
+  "metrics": {
+    "candidate_exact_match": null,
+    "source_link_rate": null,
+    "warning_exact_match": null
+  },
+  "required_approvers": [
+    "clinical_safety_owner",
+    "privacy_security_owner",
+    "facility_operations_owner"
+  ],
+  "note": "Null thresholds are deliberate. Candidate measurements must not be presented as approved release gates."
+}

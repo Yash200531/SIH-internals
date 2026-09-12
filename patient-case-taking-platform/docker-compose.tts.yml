@@ -1,0 +1,18 @@
+services:
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: tts
+    gpus: all
+    environment:
+      ASR_PROVIDER: mock
+      LLM_PROVIDER: mock
+      TTS_PROVIDER: indicf5
+      TTS_WARMUP_ON_START: "true"
+      TTS_SYNTHESIS_TIMEOUT_SECONDS: "180"
+      INDICF5_DEVICE: cuda
+      INDICF5_DISABLE_COMPILE: "true"
+      INDICF5_NFE_STEPS: "16"
+      INDICF5_CACHE_ENTRIES: "32"
+      HUGGINGFACE_TOKEN: ${HUGGINGFACE_TOKEN:-}
